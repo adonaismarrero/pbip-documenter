@@ -125,4 +125,4 @@ jerarquía en un visual y referencias rotas en el DAX y en el informe.
 
 ## Licencia
 
-[MIT](LICENSE).
+[MIT](LICENSE) © Adonais Marrero
