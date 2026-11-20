@@ -83,8 +83,18 @@ Los hallazgos aparecen en el resumen de la ejecución.
 
 ### Requisito
 
-Guardar el proyecto en Power BI Desktop como **PBIP** con los formatos **TMDL** (modelo) y **PBIR**
-(informe) activados: *Archivo › Opciones › Características en versión preliminar*.
+Un proyecto guardado como **PBIP** (*Archivo › Guardar como › Proyecto de Power BI*) con el modelo
+en **TMDL** (carpeta `definition/` dentro de `*.SemanticModel`) y el informe en **PBIR** (carpeta
+`definition/` dentro de `*.Report`).
+
+- **PBIR** es el formato por defecto de Power BI Desktop: al guardar un informe antiguo
+  (`report.json`) se convierte solo. Sin PBIR se documenta el modelo, pero no el informe.
+- Si el modelo está en el formato antiguo (`model.bim`, TMSL), guárdalo en TMDL antes de usar la
+  herramienta.
+
+Referencia: [carpeta del modelo](https://learn.microsoft.com/power-bi/developer/projects/projects-dataset)
+y [carpeta del informe](https://learn.microsoft.com/power-bi/developer/projects/projects-report)
+en la documentación de Microsoft.
 
 ## Cómo funciona
 

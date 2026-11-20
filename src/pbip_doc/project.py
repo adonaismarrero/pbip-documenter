@@ -21,8 +21,8 @@ def _definition(folder: Path) -> Path:
     definition = folder / "definition"
     if not definition.is_dir():
         raise ProjectError(
-            f"{folder} has no 'definition' folder. Save the project in Power BI Desktop with the "
-            "TMDL (semantic model) and PBIR (report) formats enabled."
+            f"{folder} has no 'definition' folder: the semantic model must be saved in TMDL "
+            "format (model.bim / TMSL is not supported)."
         )
     return definition
 
