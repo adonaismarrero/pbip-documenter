@@ -21,14 +21,14 @@
 ```mermaid
 flowchart LR
     t0[("_Measures")]
-    t1["Customers"]
-    t2["Date"]
+    t1["Sales"]
+    t2["Customers"]
     t3["Products"]
-    t4["Sales"]
+    t4["Date"]
     t5["Security"]
-    t4 -- "*:1 · Order Date" --> t2
-    t4 -- "*:1 · Customer ID" --> t1
-    t4 -- "*:1 · Product ID" --> t3
+    t1 -- "*:1 · Order Date" --> t4
+    t1 -- "*:1 · Customer ID" --> t2
+    t1 -- "*:1 · Product ID" --> t3
 ```
 
 ## Tables
@@ -49,6 +49,53 @@ let
     Source = #table(type table [Placeholder = Int64.Type], {})
 in
     Source
+```
+
+</details>
+
+### Sales
+
+Sales fact at order-line grain (marts.fct_sales). Numeric columns are hidden: use the measures.
+
+| Column | Type | Description | Notes |
+|---|---|---|---|
+| Order Item ID | int64 |  | key, hidden |
+| Order ID | int64 |  | hidden |
+| Order Date | dateTime |  | hidden, → `Date` |
+| Customer ID | int64 |  | hidden, → `Customers` |
+| Product ID | int64 |  | hidden, → `Products` |
+| Channel | string | Sales channel: web, app or marketplace. |  |
+| Payment Method | string |  |  |
+| Status | string | delivered, shipped, cancelled or returned. |  |
+| Is Revenue | boolean | TRUE for delivered and shipped orders. Revenue measures filter on it. |  |
+| Quantity | int64 |  | hidden |
+| Gross Amount | decimal |  | hidden |
+| Discount Amount | decimal |  | hidden |
+| Net Amount | decimal |  | hidden |
+| Cost Amount | decimal |  | hidden |
+| Margin Amount | decimal |  | hidden |
+
+<details><summary>Source (m, import)</summary>
+
+```powerquery
+let
+    Source = LoadMart("fct_sales"),
+    Selected = Table.SelectColumns(Source, {
+        "order_item_id", "order_id", "order_date", "customer_id", "product_id",
+        "channel", "payment_method", "status", "is_revenue", "quantity",
+        "gross_amount", "discount_amount", "net_amount", "cost_amount", "margin_amount"
+    }),
+    Typed = Table.TransformColumnTypes(Selected, {
+        {"order_item_id", Int64.Type}, {"order_id", Int64.Type}, {"order_date", type date},
+        {"customer_id", Int64.Type}, {"product_id", Int64.Type},
+        {"channel", type text}, {"payment_method", type text}, {"status", type text},
+        {"is_revenue", type logical}, {"quantity", Int64.Type},
+        {"gross_amount", Currency.Type}, {"discount_amount", Currency.Type},
+        {"net_amount", Currency.Type}, {"cost_amount", Currency.Type},
+        {"margin_amount", Currency.Type}
+    }, "en-US")
+in
+    Typed
 ```
 
 </details>
@@ -87,6 +134,44 @@ let
     }, "en-US"),
     WithOrder = Table.AddColumn(Typed, "segment_order",
         each List.PositionOf({"new", "occasional", "regular", "vip"}, [customer_segment]) + 1,
+        Int64.Type)
+in
+    WithOrder
+```
+
+</details>
+
+### Products
+
+Product dimension (marts.dim_products).
+
+| Column | Type | Description | Notes |
+|---|---|---|---|
+| Product ID | int64 |  | key, hidden, ← `Sales` |
+| Product | string |  |  |
+| Category | string |  |  |
+| Unit Price | decimal | Current list price per unit (EUR, VAT excluded). |  |
+| Unit Margin % | double |  |  |
+| Price Band | string |  | sorted by `Price Band Order` |
+| Is Active | boolean |  |  |
+| Price Band Order | int64 | Sort order of Price Band, calculated in Power Query (see Customers[Segment Order]). | hidden |
+
+<details><summary>Source (m, import)</summary>
+
+```powerquery
+let
+    Source = LoadMart("dim_products"),
+    Selected = Table.SelectColumns(Source, {
+        "product_id", "product_name", "category", "unit_price",
+        "unit_margin_pct", "price_band", "is_active"
+    }),
+    Typed = Table.TransformColumnTypes(Selected, {
+        {"product_id", Int64.Type}, {"product_name", type text}, {"category", type text},
+        {"unit_price", Currency.Type}, {"unit_margin_pct", type number},
+        {"price_band", type text}, {"is_active", type logical}
+    }, "en-US"),
+    WithOrder = Table.AddColumn(Typed, "price_band_order",
+        each List.PositionOf({"0-25", "25-100", "100-300", "300+"}, [price_band]) + 1,
         Int64.Type)
 in
     WithOrder
@@ -148,91 +233,6 @@ let
         {"date_day", type date}, {"year", Int64.Type}, {"quarter", Int64.Type},
         {"month", Int64.Type}, {"year_month", type text}, {"iso_week", Int64.Type},
         {"day_of_week", Int64.Type}, {"day_name", type text}, {"is_weekend", type logical}
-    }, "en-US")
-in
-    Typed
-```
-
-</details>
-
-### Products
-
-Product dimension (marts.dim_products).
-
-| Column | Type | Description | Notes |
-|---|---|---|---|
-| Product ID | int64 |  | key, hidden, ← `Sales` |
-| Product | string |  |  |
-| Category | string |  |  |
-| Unit Price | decimal | Current list price per unit (EUR, VAT excluded). |  |
-| Unit Margin % | double |  |  |
-| Price Band | string |  | sorted by `Price Band Order` |
-| Is Active | boolean |  |  |
-| Price Band Order | int64 | Sort order of Price Band, calculated in Power Query (see Customers[Segment Order]). | hidden |
-
-<details><summary>Source (m, import)</summary>
-
-```powerquery
-let
-    Source = LoadMart("dim_products"),
-    Selected = Table.SelectColumns(Source, {
-        "product_id", "product_name", "category", "unit_price",
-        "unit_margin_pct", "price_band", "is_active"
-    }),
-    Typed = Table.TransformColumnTypes(Selected, {
-        {"product_id", Int64.Type}, {"product_name", type text}, {"category", type text},
-        {"unit_price", Currency.Type}, {"unit_margin_pct", type number},
-        {"price_band", type text}, {"is_active", type logical}
-    }, "en-US"),
-    WithOrder = Table.AddColumn(Typed, "price_band_order",
-        each List.PositionOf({"0-25", "25-100", "100-300", "300+"}, [price_band]) + 1,
-        Int64.Type)
-in
-    WithOrder
-```
-
-</details>
-
-### Sales
-
-Sales fact at order-line grain (marts.fct_sales). Numeric columns are hidden: use the measures.
-
-| Column | Type | Description | Notes |
-|---|---|---|---|
-| Order Item ID | int64 |  | key, hidden |
-| Order ID | int64 |  | hidden |
-| Order Date | dateTime |  | hidden, → `Date` |
-| Customer ID | int64 |  | hidden, → `Customers` |
-| Product ID | int64 |  | hidden, → `Products` |
-| Channel | string | Sales channel: web, app or marketplace. |  |
-| Payment Method | string |  |  |
-| Status | string | delivered, shipped, cancelled or returned. |  |
-| Is Revenue | boolean | TRUE for delivered and shipped orders. Revenue measures filter on it. |  |
-| Quantity | int64 |  | hidden |
-| Gross Amount | decimal |  | hidden |
-| Discount Amount | decimal |  | hidden |
-| Net Amount | decimal |  | hidden |
-| Cost Amount | decimal |  | hidden |
-| Margin Amount | decimal |  | hidden |
-
-<details><summary>Source (m, import)</summary>
-
-```powerquery
-let
-    Source = LoadMart("fct_sales"),
-    Selected = Table.SelectColumns(Source, {
-        "order_item_id", "order_id", "order_date", "customer_id", "product_id",
-        "channel", "payment_method", "status", "is_revenue", "quantity",
-        "gross_amount", "discount_amount", "net_amount", "cost_amount", "margin_amount"
-    }),
-    Typed = Table.TransformColumnTypes(Selected, {
-        {"order_item_id", Int64.Type}, {"order_id", Int64.Type}, {"order_date", type date},
-        {"customer_id", Int64.Type}, {"product_id", Int64.Type},
-        {"channel", type text}, {"payment_method", type text}, {"status", type text},
-        {"is_revenue", type logical}, {"quantity", Int64.Type},
-        {"gross_amount", Currency.Type}, {"discount_amount", Currency.Type},
-        {"net_amount", Currency.Type}, {"cost_amount", Currency.Type},
-        {"margin_amount", Currency.Type}
     }, "en-US")
 in
     Typed

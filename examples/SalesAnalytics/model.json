@@ -194,508 +194,6 @@
         "calculation_group_precedence": null
       },
       {
-        "name": "Customers",
-        "description": "Customer dimension (marts.dim_customers). Row-level security filters this table by region.",
-        "is_hidden": false,
-        "data_category": null,
-        "columns": [
-          {
-            "table": "Customers",
-            "name": "Customer ID",
-            "data_type": "int64",
-            "description": null,
-            "is_hidden": true,
-            "is_key": true,
-            "format_string": "0",
-            "display_folder": null,
-            "source_column": "customer_id",
-            "expression": null,
-            "sort_by": null,
-            "data_category": null
-          },
-          {
-            "table": "Customers",
-            "name": "Customer",
-            "data_type": "string",
-            "description": null,
-            "is_hidden": false,
-            "is_key": false,
-            "format_string": null,
-            "display_folder": null,
-            "source_column": "full_name",
-            "expression": null,
-            "sort_by": null,
-            "data_category": null
-          },
-          {
-            "table": "Customers",
-            "name": "City",
-            "data_type": "string",
-            "description": null,
-            "is_hidden": false,
-            "is_key": false,
-            "format_string": null,
-            "display_folder": null,
-            "source_column": "city",
-            "expression": null,
-            "sort_by": null,
-            "data_category": "City"
-          },
-          {
-            "table": "Customers",
-            "name": "Region",
-            "data_type": "string",
-            "description": null,
-            "is_hidden": false,
-            "is_key": false,
-            "format_string": null,
-            "display_folder": null,
-            "source_column": "region",
-            "expression": null,
-            "sort_by": null,
-            "data_category": "StateOrProvince"
-          },
-          {
-            "table": "Customers",
-            "name": "Country",
-            "data_type": "string",
-            "description": null,
-            "is_hidden": false,
-            "is_key": false,
-            "format_string": null,
-            "display_folder": null,
-            "source_column": "country",
-            "expression": null,
-            "sort_by": null,
-            "data_category": "Country"
-          },
-          {
-            "table": "Customers",
-            "name": "Signup Date",
-            "data_type": "dateTime",
-            "description": null,
-            "is_hidden": false,
-            "is_key": false,
-            "format_string": "yyyy-mm-dd",
-            "display_folder": null,
-            "source_column": "signup_date",
-            "expression": null,
-            "sort_by": null,
-            "data_category": null
-          },
-          {
-            "table": "Customers",
-            "name": "First Order Date",
-            "data_type": "dateTime",
-            "description": "Date of the first revenue order. Used by the New Customers measure.",
-            "is_hidden": false,
-            "is_key": false,
-            "format_string": "yyyy-mm-dd",
-            "display_folder": null,
-            "source_column": "first_order_date",
-            "expression": null,
-            "sort_by": null,
-            "data_category": null
-          },
-          {
-            "table": "Customers",
-            "name": "Last Order Date",
-            "data_type": "dateTime",
-            "description": null,
-            "is_hidden": false,
-            "is_key": false,
-            "format_string": "yyyy-mm-dd",
-            "display_folder": null,
-            "source_column": "last_order_date",
-            "expression": null,
-            "sort_by": null,
-            "data_category": null
-          },
-          {
-            "table": "Customers",
-            "name": "Segment",
-            "data_type": "string",
-            "description": "new / occasional / regular / vip.",
-            "is_hidden": false,
-            "is_key": false,
-            "format_string": null,
-            "display_folder": null,
-            "source_column": "customer_segment",
-            "expression": null,
-            "sort_by": "Segment Order",
-            "data_category": null
-          },
-          {
-            "table": "Customers",
-            "name": "Segment Order",
-            "data_type": "int64",
-            "description": "Sort order of Segment. Calculated in Power Query: a DAX calculated column based on\nSegment would create a circular dependency with the sort-by-column setting.",
-            "is_hidden": true,
-            "is_key": false,
-            "format_string": "0",
-            "display_folder": null,
-            "source_column": "segment_order",
-            "expression": null,
-            "sort_by": null,
-            "data_category": null
-          }
-        ],
-        "measures": [],
-        "hierarchies": [],
-        "partitions": [
-          {
-            "name": "Customers",
-            "kind": "m",
-            "mode": "import",
-            "source": "let\n    Source = LoadMart(\"dim_customers\"),\n    Selected = Table.SelectColumns(Source, {\n        \"customer_id\", \"full_name\", \"city\", \"region\", \"country\",\n        \"signup_date\", \"first_order_date\", \"last_order_date\", \"customer_segment\"\n    }),\n    Typed = Table.TransformColumnTypes(Selected, {\n        {\"customer_id\", Int64.Type}, {\"full_name\", type text}, {\"city\", type text},\n        {\"region\", type text}, {\"country\", type text}, {\"signup_date\", type date},\n        {\"first_order_date\", type date}, {\"last_order_date\", type date},\n        {\"customer_segment\", type text}\n    }, \"en-US\"),\n    WithOrder = Table.AddColumn(Typed, \"segment_order\",\n        each List.PositionOf({\"new\", \"occasional\", \"regular\", \"vip\"}, [customer_segment]) + 1,\n        Int64.Type)\nin\n    WithOrder"
-          }
-        ],
-        "calculation_items": [],
-        "calculation_group_precedence": null
-      },
-      {
-        "name": "Date",
-        "description": "Calendar (marts.dim_date), marked as the date table of the model.",
-        "is_hidden": false,
-        "data_category": "Time",
-        "columns": [
-          {
-            "table": "Date",
-            "name": "Date",
-            "data_type": "dateTime",
-            "description": null,
-            "is_hidden": false,
-            "is_key": true,
-            "format_string": "yyyy-mm-dd",
-            "display_folder": null,
-            "source_column": "date_day",
-            "expression": null,
-            "sort_by": null,
-            "data_category": null
-          },
-          {
-            "table": "Date",
-            "name": "Year",
-            "data_type": "int64",
-            "description": null,
-            "is_hidden": false,
-            "is_key": false,
-            "format_string": "0",
-            "display_folder": null,
-            "source_column": "year",
-            "expression": null,
-            "sort_by": null,
-            "data_category": null
-          },
-          {
-            "table": "Date",
-            "name": "Quarter",
-            "data_type": "int64",
-            "description": null,
-            "is_hidden": true,
-            "is_key": false,
-            "format_string": "0",
-            "display_folder": null,
-            "source_column": "quarter",
-            "expression": null,
-            "sort_by": null,
-            "data_category": null
-          },
-          {
-            "table": "Date",
-            "name": "Quarter Label",
-            "data_type": "string",
-            "description": null,
-            "is_hidden": false,
-            "is_key": false,
-            "format_string": null,
-            "display_folder": null,
-            "source_column": null,
-            "expression": "\"Q\" & 'Date'[Quarter]",
-            "sort_by": "Quarter",
-            "data_category": null
-          },
-          {
-            "table": "Date",
-            "name": "Month",
-            "data_type": "int64",
-            "description": null,
-            "is_hidden": true,
-            "is_key": false,
-            "format_string": "0",
-            "display_folder": null,
-            "source_column": "month",
-            "expression": null,
-            "sort_by": null,
-            "data_category": null
-          },
-          {
-            "table": "Date",
-            "name": "Month Name",
-            "data_type": "string",
-            "description": null,
-            "is_hidden": false,
-            "is_key": false,
-            "format_string": null,
-            "display_folder": null,
-            "source_column": null,
-            "expression": "FORMAT ( 'Date'[Date], \"MMM\" )",
-            "sort_by": "Month",
-            "data_category": null
-          },
-          {
-            "table": "Date",
-            "name": "Year Month",
-            "data_type": "string",
-            "description": "Year and month as text (2025-01), sorts chronologically.",
-            "is_hidden": false,
-            "is_key": false,
-            "format_string": null,
-            "display_folder": null,
-            "source_column": "year_month",
-            "expression": null,
-            "sort_by": null,
-            "data_category": null
-          },
-          {
-            "table": "Date",
-            "name": "ISO Week",
-            "data_type": "int64",
-            "description": null,
-            "is_hidden": false,
-            "is_key": false,
-            "format_string": "0",
-            "display_folder": null,
-            "source_column": "iso_week",
-            "expression": null,
-            "sort_by": null,
-            "data_category": null
-          },
-          {
-            "table": "Date",
-            "name": "Day of Week",
-            "data_type": "int64",
-            "description": null,
-            "is_hidden": true,
-            "is_key": false,
-            "format_string": "0",
-            "display_folder": null,
-            "source_column": "day_of_week",
-            "expression": null,
-            "sort_by": null,
-            "data_category": null
-          },
-          {
-            "table": "Date",
-            "name": "Day Name",
-            "data_type": "string",
-            "description": null,
-            "is_hidden": false,
-            "is_key": false,
-            "format_string": null,
-            "display_folder": null,
-            "source_column": "day_name",
-            "expression": null,
-            "sort_by": "Day of Week",
-            "data_category": null
-          },
-          {
-            "table": "Date",
-            "name": "Is Weekend",
-            "data_type": "boolean",
-            "description": null,
-            "is_hidden": false,
-            "is_key": false,
-            "format_string": "\"\"\"TRUE\"\";\"\"TRUE\"\";\"\"FALSE\"\"\"",
-            "display_folder": null,
-            "source_column": "is_weekend",
-            "expression": null,
-            "sort_by": null,
-            "data_category": null
-          },
-          {
-            "table": "Date",
-            "name": "Date With Sales",
-            "data_type": "boolean",
-            "description": "TRUE up to the last order date. Time-intelligence items shift only these dates, so\nfuture years of the calendar do not show a previous-year value without current sales.",
-            "is_hidden": true,
-            "is_key": false,
-            "format_string": "\"\"\"TRUE\"\";\"\"TRUE\"\";\"\"FALSE\"\"\"",
-            "display_folder": null,
-            "source_column": null,
-            "expression": "'Date'[Date] <= MAX ( Sales[Order Date] )",
-            "sort_by": null,
-            "data_category": null
-          }
-        ],
-        "measures": [],
-        "hierarchies": [
-          {
-            "name": "Calendar",
-            "levels": [
-              [
-                "Year",
-                "Year"
-              ],
-              [
-                "Quarter",
-                "Quarter Label"
-              ],
-              [
-                "Month",
-                "Month Name"
-              ],
-              [
-                "Day",
-                "Date"
-              ]
-            ]
-          }
-        ],
-        "partitions": [
-          {
-            "name": "Date",
-            "kind": "m",
-            "mode": "import",
-            "source": "let\n    Source = LoadMart(\"dim_date\"),\n    Selected = Table.SelectColumns(Source, {\n        \"date_day\", \"year\", \"quarter\", \"month\", \"year_month\",\n        \"iso_week\", \"day_of_week\", \"day_name\", \"is_weekend\"\n    }),\n    Typed = Table.TransformColumnTypes(Selected, {\n        {\"date_day\", type date}, {\"year\", Int64.Type}, {\"quarter\", Int64.Type},\n        {\"month\", Int64.Type}, {\"year_month\", type text}, {\"iso_week\", Int64.Type},\n        {\"day_of_week\", Int64.Type}, {\"day_name\", type text}, {\"is_weekend\", type logical}\n    }, \"en-US\")\nin\n    Typed"
-          }
-        ],
-        "calculation_items": [],
-        "calculation_group_precedence": null
-      },
-      {
-        "name": "Products",
-        "description": "Product dimension (marts.dim_products).",
-        "is_hidden": false,
-        "data_category": null,
-        "columns": [
-          {
-            "table": "Products",
-            "name": "Product ID",
-            "data_type": "int64",
-            "description": null,
-            "is_hidden": true,
-            "is_key": true,
-            "format_string": "0",
-            "display_folder": null,
-            "source_column": "product_id",
-            "expression": null,
-            "sort_by": null,
-            "data_category": null
-          },
-          {
-            "table": "Products",
-            "name": "Product",
-            "data_type": "string",
-            "description": null,
-            "is_hidden": false,
-            "is_key": false,
-            "format_string": null,
-            "display_folder": null,
-            "source_column": "product_name",
-            "expression": null,
-            "sort_by": null,
-            "data_category": null
-          },
-          {
-            "table": "Products",
-            "name": "Category",
-            "data_type": "string",
-            "description": null,
-            "is_hidden": false,
-            "is_key": false,
-            "format_string": null,
-            "display_folder": null,
-            "source_column": "category",
-            "expression": null,
-            "sort_by": null,
-            "data_category": null
-          },
-          {
-            "table": "Products",
-            "name": "Unit Price",
-            "data_type": "decimal",
-            "description": "Current list price per unit (EUR, VAT excluded).",
-            "is_hidden": false,
-            "is_key": false,
-            "format_string": "#,0.00 €",
-            "display_folder": null,
-            "source_column": "unit_price",
-            "expression": null,
-            "sort_by": null,
-            "data_category": null
-          },
-          {
-            "table": "Products",
-            "name": "Unit Margin %",
-            "data_type": "double",
-            "description": null,
-            "is_hidden": false,
-            "is_key": false,
-            "format_string": "0.0%",
-            "display_folder": null,
-            "source_column": "unit_margin_pct",
-            "expression": null,
-            "sort_by": null,
-            "data_category": null
-          },
-          {
-            "table": "Products",
-            "name": "Price Band",
-            "data_type": "string",
-            "description": null,
-            "is_hidden": false,
-            "is_key": false,
-            "format_string": null,
-            "display_folder": null,
-            "source_column": "price_band",
-            "expression": null,
-            "sort_by": "Price Band Order",
-            "data_category": null
-          },
-          {
-            "table": "Products",
-            "name": "Is Active",
-            "data_type": "boolean",
-            "description": null,
-            "is_hidden": false,
-            "is_key": false,
-            "format_string": "\"\"\"TRUE\"\";\"\"TRUE\"\";\"\"FALSE\"\"\"",
-            "display_folder": null,
-            "source_column": "is_active",
-            "expression": null,
-            "sort_by": null,
-            "data_category": null
-          },
-          {
-            "table": "Products",
-            "name": "Price Band Order",
-            "data_type": "int64",
-            "description": "Sort order of Price Band, calculated in Power Query (see Customers[Segment Order]).",
-            "is_hidden": true,
-            "is_key": false,
-            "format_string": "0",
-            "display_folder": null,
-            "source_column": "price_band_order",
-            "expression": null,
-            "sort_by": null,
-            "data_category": null
-          }
-        ],
-        "measures": [],
-        "hierarchies": [],
-        "partitions": [
-          {
-            "name": "Products",
-            "kind": "m",
-            "mode": "import",
-            "source": "let\n    Source = LoadMart(\"dim_products\"),\n    Selected = Table.SelectColumns(Source, {\n        \"product_id\", \"product_name\", \"category\", \"unit_price\",\n        \"unit_margin_pct\", \"price_band\", \"is_active\"\n    }),\n    Typed = Table.TransformColumnTypes(Selected, {\n        {\"product_id\", Int64.Type}, {\"product_name\", type text}, {\"category\", type text},\n        {\"unit_price\", Currency.Type}, {\"unit_margin_pct\", type number},\n        {\"price_band\", type text}, {\"is_active\", type logical}\n    }, \"en-US\"),\n    WithOrder = Table.AddColumn(Typed, \"price_band_order\",\n        each List.PositionOf({\"0-25\", \"25-100\", \"100-300\", \"300+\"}, [price_band]) + 1,\n        Int64.Type)\nin\n    WithOrder"
-          }
-        ],
-        "calculation_items": [],
-        "calculation_group_precedence": null
-      },
-      {
         "name": "Sales",
         "description": "Sales fact at order-line grain (marts.fct_sales). Numeric columns are hidden: use the measures.",
         "is_hidden": false,
@@ -926,35 +424,147 @@
         "calculation_group_precedence": null
       },
       {
-        "name": "Security",
-        "description": "Mapping user -> regions for dynamic row-level security (role 'Regional Manager').\nDemo data inline; in production this table would come from the identity source.",
-        "is_hidden": true,
+        "name": "Customers",
+        "description": "Customer dimension (marts.dim_customers). Row-level security filters this table by region.",
+        "is_hidden": false,
         "data_category": null,
         "columns": [
           {
-            "table": "Security",
-            "name": "User Email",
-            "data_type": "string",
+            "table": "Customers",
+            "name": "Customer ID",
+            "data_type": "int64",
             "description": null,
             "is_hidden": true,
-            "is_key": false,
-            "format_string": null,
+            "is_key": true,
+            "format_string": "0",
             "display_folder": null,
-            "source_column": "User Email",
+            "source_column": "customer_id",
             "expression": null,
             "sort_by": null,
             "data_category": null
           },
           {
-            "table": "Security",
-            "name": "Region",
+            "table": "Customers",
+            "name": "Customer",
             "data_type": "string",
             "description": null,
-            "is_hidden": true,
+            "is_hidden": false,
             "is_key": false,
             "format_string": null,
             "display_folder": null,
-            "source_column": "Region",
+            "source_column": "full_name",
+            "expression": null,
+            "sort_by": null,
+            "data_category": null
+          },
+          {
+            "table": "Customers",
+            "name": "City",
+            "data_type": "string",
+            "description": null,
+            "is_hidden": false,
+            "is_key": false,
+            "format_string": null,
+            "display_folder": null,
+            "source_column": "city",
+            "expression": null,
+            "sort_by": null,
+            "data_category": "City"
+          },
+          {
+            "table": "Customers",
+            "name": "Region",
+            "data_type": "string",
+            "description": null,
+            "is_hidden": false,
+            "is_key": false,
+            "format_string": null,
+            "display_folder": null,
+            "source_column": "region",
+            "expression": null,
+            "sort_by": null,
+            "data_category": "StateOrProvince"
+          },
+          {
+            "table": "Customers",
+            "name": "Country",
+            "data_type": "string",
+            "description": null,
+            "is_hidden": false,
+            "is_key": false,
+            "format_string": null,
+            "display_folder": null,
+            "source_column": "country",
+            "expression": null,
+            "sort_by": null,
+            "data_category": "Country"
+          },
+          {
+            "table": "Customers",
+            "name": "Signup Date",
+            "data_type": "dateTime",
+            "description": null,
+            "is_hidden": false,
+            "is_key": false,
+            "format_string": "yyyy-mm-dd",
+            "display_folder": null,
+            "source_column": "signup_date",
+            "expression": null,
+            "sort_by": null,
+            "data_category": null
+          },
+          {
+            "table": "Customers",
+            "name": "First Order Date",
+            "data_type": "dateTime",
+            "description": "Date of the first revenue order. Used by the New Customers measure.",
+            "is_hidden": false,
+            "is_key": false,
+            "format_string": "yyyy-mm-dd",
+            "display_folder": null,
+            "source_column": "first_order_date",
+            "expression": null,
+            "sort_by": null,
+            "data_category": null
+          },
+          {
+            "table": "Customers",
+            "name": "Last Order Date",
+            "data_type": "dateTime",
+            "description": null,
+            "is_hidden": false,
+            "is_key": false,
+            "format_string": "yyyy-mm-dd",
+            "display_folder": null,
+            "source_column": "last_order_date",
+            "expression": null,
+            "sort_by": null,
+            "data_category": null
+          },
+          {
+            "table": "Customers",
+            "name": "Segment",
+            "data_type": "string",
+            "description": "new / occasional / regular / vip.",
+            "is_hidden": false,
+            "is_key": false,
+            "format_string": null,
+            "display_folder": null,
+            "source_column": "customer_segment",
+            "expression": null,
+            "sort_by": "Segment Order",
+            "data_category": null
+          },
+          {
+            "table": "Customers",
+            "name": "Segment Order",
+            "data_type": "int64",
+            "description": "Sort order of Segment. Calculated in Power Query: a DAX calculated column based on\nSegment would create a circular dependency with the sort-by-column setting.",
+            "is_hidden": true,
+            "is_key": false,
+            "format_string": "0",
+            "display_folder": null,
+            "source_column": "segment_order",
             "expression": null,
             "sort_by": null,
             "data_category": null
@@ -964,10 +574,352 @@
         "hierarchies": [],
         "partitions": [
           {
-            "name": "Security",
+            "name": "Customers",
             "kind": "m",
             "mode": "import",
-            "source": "let\n    Source = #table(\n        type table [User Email = text, Region = text],\n        {\n            {\"manager.madrid@example.com\", \"Madrid\"},\n            {\"manager.catalonia@example.com\", \"Cataluna\"},\n            {\"manager.south@example.com\", \"Andalucia\"},\n            {\"manager.south@example.com\", \"Comunidad Valenciana\"}\n        }\n    )\nin\n    Source"
+            "source": "let\n    Source = LoadMart(\"dim_customers\"),\n    Selected = Table.SelectColumns(Source, {\n        \"customer_id\", \"full_name\", \"city\", \"region\", \"country\",\n        \"signup_date\", \"first_order_date\", \"last_order_date\", \"customer_segment\"\n    }),\n    Typed = Table.TransformColumnTypes(Selected, {\n        {\"customer_id\", Int64.Type}, {\"full_name\", type text}, {\"city\", type text},\n        {\"region\", type text}, {\"country\", type text}, {\"signup_date\", type date},\n        {\"first_order_date\", type date}, {\"last_order_date\", type date},\n        {\"customer_segment\", type text}\n    }, \"en-US\"),\n    WithOrder = Table.AddColumn(Typed, \"segment_order\",\n        each List.PositionOf({\"new\", \"occasional\", \"regular\", \"vip\"}, [customer_segment]) + 1,\n        Int64.Type)\nin\n    WithOrder"
+          }
+        ],
+        "calculation_items": [],
+        "calculation_group_precedence": null
+      },
+      {
+        "name": "Products",
+        "description": "Product dimension (marts.dim_products).",
+        "is_hidden": false,
+        "data_category": null,
+        "columns": [
+          {
+            "table": "Products",
+            "name": "Product ID",
+            "data_type": "int64",
+            "description": null,
+            "is_hidden": true,
+            "is_key": true,
+            "format_string": "0",
+            "display_folder": null,
+            "source_column": "product_id",
+            "expression": null,
+            "sort_by": null,
+            "data_category": null
+          },
+          {
+            "table": "Products",
+            "name": "Product",
+            "data_type": "string",
+            "description": null,
+            "is_hidden": false,
+            "is_key": false,
+            "format_string": null,
+            "display_folder": null,
+            "source_column": "product_name",
+            "expression": null,
+            "sort_by": null,
+            "data_category": null
+          },
+          {
+            "table": "Products",
+            "name": "Category",
+            "data_type": "string",
+            "description": null,
+            "is_hidden": false,
+            "is_key": false,
+            "format_string": null,
+            "display_folder": null,
+            "source_column": "category",
+            "expression": null,
+            "sort_by": null,
+            "data_category": null
+          },
+          {
+            "table": "Products",
+            "name": "Unit Price",
+            "data_type": "decimal",
+            "description": "Current list price per unit (EUR, VAT excluded).",
+            "is_hidden": false,
+            "is_key": false,
+            "format_string": "#,0.00 €",
+            "display_folder": null,
+            "source_column": "unit_price",
+            "expression": null,
+            "sort_by": null,
+            "data_category": null
+          },
+          {
+            "table": "Products",
+            "name": "Unit Margin %",
+            "data_type": "double",
+            "description": null,
+            "is_hidden": false,
+            "is_key": false,
+            "format_string": "0.0%",
+            "display_folder": null,
+            "source_column": "unit_margin_pct",
+            "expression": null,
+            "sort_by": null,
+            "data_category": null
+          },
+          {
+            "table": "Products",
+            "name": "Price Band",
+            "data_type": "string",
+            "description": null,
+            "is_hidden": false,
+            "is_key": false,
+            "format_string": null,
+            "display_folder": null,
+            "source_column": "price_band",
+            "expression": null,
+            "sort_by": "Price Band Order",
+            "data_category": null
+          },
+          {
+            "table": "Products",
+            "name": "Is Active",
+            "data_type": "boolean",
+            "description": null,
+            "is_hidden": false,
+            "is_key": false,
+            "format_string": "\"\"\"TRUE\"\";\"\"TRUE\"\";\"\"FALSE\"\"\"",
+            "display_folder": null,
+            "source_column": "is_active",
+            "expression": null,
+            "sort_by": null,
+            "data_category": null
+          },
+          {
+            "table": "Products",
+            "name": "Price Band Order",
+            "data_type": "int64",
+            "description": "Sort order of Price Band, calculated in Power Query (see Customers[Segment Order]).",
+            "is_hidden": true,
+            "is_key": false,
+            "format_string": "0",
+            "display_folder": null,
+            "source_column": "price_band_order",
+            "expression": null,
+            "sort_by": null,
+            "data_category": null
+          }
+        ],
+        "measures": [],
+        "hierarchies": [],
+        "partitions": [
+          {
+            "name": "Products",
+            "kind": "m",
+            "mode": "import",
+            "source": "let\n    Source = LoadMart(\"dim_products\"),\n    Selected = Table.SelectColumns(Source, {\n        \"product_id\", \"product_name\", \"category\", \"unit_price\",\n        \"unit_margin_pct\", \"price_band\", \"is_active\"\n    }),\n    Typed = Table.TransformColumnTypes(Selected, {\n        {\"product_id\", Int64.Type}, {\"product_name\", type text}, {\"category\", type text},\n        {\"unit_price\", Currency.Type}, {\"unit_margin_pct\", type number},\n        {\"price_band\", type text}, {\"is_active\", type logical}\n    }, \"en-US\"),\n    WithOrder = Table.AddColumn(Typed, \"price_band_order\",\n        each List.PositionOf({\"0-25\", \"25-100\", \"100-300\", \"300+\"}, [price_band]) + 1,\n        Int64.Type)\nin\n    WithOrder"
+          }
+        ],
+        "calculation_items": [],
+        "calculation_group_precedence": null
+      },
+      {
+        "name": "Date",
+        "description": "Calendar (marts.dim_date), marked as the date table of the model.",
+        "is_hidden": false,
+        "data_category": "Time",
+        "columns": [
+          {
+            "table": "Date",
+            "name": "Date",
+            "data_type": "dateTime",
+            "description": null,
+            "is_hidden": false,
+            "is_key": true,
+            "format_string": "yyyy-mm-dd",
+            "display_folder": null,
+            "source_column": "date_day",
+            "expression": null,
+            "sort_by": null,
+            "data_category": null
+          },
+          {
+            "table": "Date",
+            "name": "Year",
+            "data_type": "int64",
+            "description": null,
+            "is_hidden": false,
+            "is_key": false,
+            "format_string": "0",
+            "display_folder": null,
+            "source_column": "year",
+            "expression": null,
+            "sort_by": null,
+            "data_category": null
+          },
+          {
+            "table": "Date",
+            "name": "Quarter",
+            "data_type": "int64",
+            "description": null,
+            "is_hidden": true,
+            "is_key": false,
+            "format_string": "0",
+            "display_folder": null,
+            "source_column": "quarter",
+            "expression": null,
+            "sort_by": null,
+            "data_category": null
+          },
+          {
+            "table": "Date",
+            "name": "Quarter Label",
+            "data_type": "string",
+            "description": null,
+            "is_hidden": false,
+            "is_key": false,
+            "format_string": null,
+            "display_folder": null,
+            "source_column": null,
+            "expression": "\"Q\" & 'Date'[Quarter]",
+            "sort_by": "Quarter",
+            "data_category": null
+          },
+          {
+            "table": "Date",
+            "name": "Month",
+            "data_type": "int64",
+            "description": null,
+            "is_hidden": true,
+            "is_key": false,
+            "format_string": "0",
+            "display_folder": null,
+            "source_column": "month",
+            "expression": null,
+            "sort_by": null,
+            "data_category": null
+          },
+          {
+            "table": "Date",
+            "name": "Month Name",
+            "data_type": "string",
+            "description": null,
+            "is_hidden": false,
+            "is_key": false,
+            "format_string": null,
+            "display_folder": null,
+            "source_column": null,
+            "expression": "FORMAT ( 'Date'[Date], \"MMM\" )",
+            "sort_by": "Month",
+            "data_category": null
+          },
+          {
+            "table": "Date",
+            "name": "Year Month",
+            "data_type": "string",
+            "description": "Year and month as text (2025-01), sorts chronologically.",
+            "is_hidden": false,
+            "is_key": false,
+            "format_string": null,
+            "display_folder": null,
+            "source_column": "year_month",
+            "expression": null,
+            "sort_by": null,
+            "data_category": null
+          },
+          {
+            "table": "Date",
+            "name": "ISO Week",
+            "data_type": "int64",
+            "description": null,
+            "is_hidden": false,
+            "is_key": false,
+            "format_string": "0",
+            "display_folder": null,
+            "source_column": "iso_week",
+            "expression": null,
+            "sort_by": null,
+            "data_category": null
+          },
+          {
+            "table": "Date",
+            "name": "Day of Week",
+            "data_type": "int64",
+            "description": null,
+            "is_hidden": true,
+            "is_key": false,
+            "format_string": "0",
+            "display_folder": null,
+            "source_column": "day_of_week",
+            "expression": null,
+            "sort_by": null,
+            "data_category": null
+          },
+          {
+            "table": "Date",
+            "name": "Day Name",
+            "data_type": "string",
+            "description": null,
+            "is_hidden": false,
+            "is_key": false,
+            "format_string": null,
+            "display_folder": null,
+            "source_column": "day_name",
+            "expression": null,
+            "sort_by": "Day of Week",
+            "data_category": null
+          },
+          {
+            "table": "Date",
+            "name": "Is Weekend",
+            "data_type": "boolean",
+            "description": null,
+            "is_hidden": false,
+            "is_key": false,
+            "format_string": "\"\"\"TRUE\"\";\"\"TRUE\"\";\"\"FALSE\"\"\"",
+            "display_folder": null,
+            "source_column": "is_weekend",
+            "expression": null,
+            "sort_by": null,
+            "data_category": null
+          },
+          {
+            "table": "Date",
+            "name": "Date With Sales",
+            "data_type": "boolean",
+            "description": "TRUE up to the last order date. Time-intelligence items shift only these dates, so\nfuture years of the calendar do not show a previous-year value without current sales.",
+            "is_hidden": true,
+            "is_key": false,
+            "format_string": "\"\"\"TRUE\"\";\"\"TRUE\"\";\"\"FALSE\"\"\"",
+            "display_folder": null,
+            "source_column": null,
+            "expression": "'Date'[Date] <= MAX ( Sales[Order Date] )",
+            "sort_by": null,
+            "data_category": null
+          }
+        ],
+        "measures": [],
+        "hierarchies": [
+          {
+            "name": "Calendar",
+            "levels": [
+              [
+                "Year",
+                "Year"
+              ],
+              [
+                "Quarter",
+                "Quarter Label"
+              ],
+              [
+                "Month",
+                "Month Name"
+              ],
+              [
+                "Day",
+                "Date"
+              ]
+            ]
+          }
+        ],
+        "partitions": [
+          {
+            "name": "Date",
+            "kind": "m",
+            "mode": "import",
+            "source": "let\n    Source = LoadMart(\"dim_date\"),\n    Selected = Table.SelectColumns(Source, {\n        \"date_day\", \"year\", \"quarter\", \"month\", \"year_month\",\n        \"iso_week\", \"day_of_week\", \"day_name\", \"is_weekend\"\n    }),\n    Typed = Table.TransformColumnTypes(Selected, {\n        {\"date_day\", type date}, {\"year\", Int64.Type}, {\"quarter\", Int64.Type},\n        {\"month\", Int64.Type}, {\"year_month\", type text}, {\"iso_week\", Int64.Type},\n        {\"day_of_week\", Int64.Type}, {\"day_name\", type text}, {\"is_weekend\", type logical}\n    }, \"en-US\")\nin\n    Typed"
           }
         ],
         "calculation_items": [],
@@ -1057,6 +1009,54 @@
           }
         ],
         "calculation_group_precedence": 1
+      },
+      {
+        "name": "Security",
+        "description": "Mapping user -> regions for dynamic row-level security (role 'Regional Manager').\nDemo data inline; in production this table would come from the identity source.",
+        "is_hidden": true,
+        "data_category": null,
+        "columns": [
+          {
+            "table": "Security",
+            "name": "User Email",
+            "data_type": "string",
+            "description": null,
+            "is_hidden": true,
+            "is_key": false,
+            "format_string": null,
+            "display_folder": null,
+            "source_column": "User Email",
+            "expression": null,
+            "sort_by": null,
+            "data_category": null
+          },
+          {
+            "table": "Security",
+            "name": "Region",
+            "data_type": "string",
+            "description": null,
+            "is_hidden": true,
+            "is_key": false,
+            "format_string": null,
+            "display_folder": null,
+            "source_column": "Region",
+            "expression": null,
+            "sort_by": null,
+            "data_category": null
+          }
+        ],
+        "measures": [],
+        "hierarchies": [],
+        "partitions": [
+          {
+            "name": "Security",
+            "kind": "m",
+            "mode": "import",
+            "source": "let\n    Source = #table(\n        type table [User Email = text, Region = text],\n        {\n            {\"manager.madrid@example.com\", \"Madrid\"},\n            {\"manager.catalonia@example.com\", \"Cataluna\"},\n            {\"manager.south@example.com\", \"Andalucia\"},\n            {\"manager.south@example.com\", \"Comunidad Valenciana\"}\n        }\n    )\nin\n    Source"
+          }
+        ],
+        "calculation_items": [],
+        "calculation_group_precedence": null
       }
     ],
     "relationships": [

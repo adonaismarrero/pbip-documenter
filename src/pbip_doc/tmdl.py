@@ -150,7 +150,18 @@ def parse(text: str, source: str = "<string>") -> list[Node]:
             continue
         if stripped.startswith("//"):
             continue
-        if stripped.startswith("ref "):  # `ref table X` only fixes ordering in model.tmdl
+        if stripped.startswith("ref "):  # `ref table X` in model.tmdl: display order
+            _, _, rest = stripped.partition(" ")
+            ref_kind, _, ref_name = rest.partition(" ")
+            roots.append(
+                Node(
+                    "ref",
+                    unquote(ref_name),
+                    properties={"type": ref_kind},
+                    source=source,
+                    line=lineno,
+                )
+            )
             description = []
             continue
 
@@ -192,7 +203,8 @@ def parse(text: str, source: str = "<string>") -> list[Node]:
 def parse_folder(definition: Path) -> list[Node]:
     """Parse every .tmdl file of a semantic model `definition` folder (sorted for stable output)."""
     nodes: list[Node] = []
-    for path in sorted(definition.rglob("*.tmdl")):
+    # Sort on the POSIX string: Windows paths compare case-insensitively, Linux paths do not.
+    for path in sorted(definition.rglob("*.tmdl"), key=lambda p: p.as_posix()):
         rel = path.relative_to(definition).as_posix()
         nodes.extend(parse(path.read_text(encoding="utf-8-sig"), rel))
     return nodes

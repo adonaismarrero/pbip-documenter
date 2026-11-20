@@ -151,7 +151,9 @@ def load_report(definition: Path) -> Report:
             display_name=meta.get("displayName", page_dir.name),
             filters=extract_fields(meta.get("filterConfig", {})),
         )
-        for visual_file in sorted(page_dir.glob("visuals/*/visual.json")):
+        for visual_file in sorted(
+            page_dir.glob("visuals/*/visual.json"), key=lambda p: p.as_posix()
+        ):
             data = _read(visual_file)
             visual = data.get("visual", {})
             page.visuals.append(

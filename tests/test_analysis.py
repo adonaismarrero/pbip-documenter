@@ -44,7 +44,8 @@ def test_model_objects(model: SemanticModel) -> None:
     assert model.name == "Mini"
     assert model.compatibility_level == "1600"
     assert model.culture == "en-US"
-    assert {t.name for t in model.tables} == {"Calc", "Date", "Fact", "Store"}
+    # model.tmdl lists only Fact: it goes first, the rest keep file order
+    assert [t.name for t in model.tables] == ["Fact", "Calc", "Date", "Store"]
     fact = model.table("fact")
     assert fact is not None and fact.description == "Fact table."
     assert model.measure("Customer's Share") is not None

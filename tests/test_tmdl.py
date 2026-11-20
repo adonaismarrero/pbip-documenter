@@ -96,9 +96,12 @@ def test_expression_properties_and_bare_blocks() -> None:
     assert partition.prop("source") == "let a = 1 in a"
 
 
-def test_ref_lines_and_comments_are_ignored() -> None:
-    nodes = parse("model Model\n\tculture: en-US\n\n// comment\nref table Sales\n")
-    assert [n.kind for n in nodes] == ["model"]
+def test_ref_lines_keep_order_and_comments_are_ignored() -> None:
+    nodes = parse("model Model\n\tculture: en-US\n\n// comment\nref table 'My Sales'\n")
+    assert [(n.kind, n.name, n.prop("type")) for n in nodes] == [
+        ("model", "Model", None),
+        ("ref", "My Sales", "table"),
+    ]
 
 
 def test_bom_and_crlf() -> None:

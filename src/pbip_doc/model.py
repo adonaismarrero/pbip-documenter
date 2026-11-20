@@ -280,6 +280,10 @@ def build(nodes: list[Node], name: str = "Model") -> SemanticModel:
             )
         elif node.kind == "expression":
             model.expressions.append(_expression(node))
+    order = [n.name for n in nodes if n.kind == "ref" and n.prop("type") == "table"]
+    if order:  # same order as Power BI Desktop; unlisted tables go last
+        rank = {name: i for i, name in enumerate(order)}
+        model.tables.sort(key=lambda t: rank.get(t.name, len(rank)))
     return model
 
 

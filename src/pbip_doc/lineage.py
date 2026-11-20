@@ -110,8 +110,8 @@ def analyse(model: SemanticModel, report: Report | None = None) -> Lineage:
                 lineage.structural.add(target)
         for hierarchy in table.hierarchies:
             for _, column_name in hierarchy.levels:
-                if obj := resolver.column(table.name, column_name):
-                    lineage.structural.add(obj)
+                if level_column := resolver.column(table.name, column_name):
+                    lineage.structural.add(level_column)
         for item in table.calculation_items:
             owner = f"'{table.name}'[{item.name}]"
             for text in (item.expression, item.format_string_expression or ""):
@@ -120,12 +120,15 @@ def analyse(model: SemanticModel, report: Report | None = None) -> Lineage:
                 lineage.broken += broken
 
     for rel in model.relationships:
-        for table, column in ((rel.from_table, rel.from_column), (rel.to_table, rel.to_column)):
-            if obj := resolver.column(table, column):
-                lineage.structural.add(obj)
+        for table_name, column_name in (
+            (rel.from_table, rel.from_column),
+            (rel.to_table, rel.to_column),
+        ):
+            if key_column := resolver.column(table_name, column_name):
+                lineage.structural.add(key_column)
     for role in model.roles:
-        for table, expression in role.table_filters.items():
-            deps, broken = resolver.resolve(expression, table, f"role {role.name}")
+        for table_name, expression in role.table_filters.items():
+            deps, broken = resolver.resolve(expression, table_name, f"role {role.name}")
             lineage.structural |= deps
             lineage.broken += broken
 
