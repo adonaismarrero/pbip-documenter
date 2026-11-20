@@ -4,7 +4,7 @@
 ![Python](https://img.shields.io/badge/Python-3.11%20|%203.12%20|%203.13-3776AB?logo=python&logoColor=white)
 ![Power BI](https://img.shields.io/badge/Power%20BI-PBIP%20·%20TMDL%20·%20PBIR-F2C811?logo=powerbi&logoColor=black)
 ![Dependencies](https://img.shields.io/badge/dependencies-0-brightgreen)
-![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)
+[![License: MIT © Adonais Marrero](https://img.shields.io/badge/License-MIT%20%C2%A9%20Adonais%20Marrero-green.svg)](LICENSE)
 
 Genera la **documentación** de un proyecto de Power BI y revisa su **calidad** directamente desde
 los ficheros del proyecto (**PBIP**: modelo en **TMDL** e informe en **PBIR**), sin abrir Power BI
