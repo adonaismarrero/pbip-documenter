@@ -11,7 +11,7 @@
 | Relationships | 3 |
 | Security roles | 1 |
 | Report | 1 page(s), 12 visual(s) |
-| Checks | 0 errors · 10 warnings · 26 info |
+| Checks | 0 errors · 0 warnings · 26 info |
 | Compatibility level | 1606 |
 
 **Contents:** [Diagram](#diagram) · [Tables](#tables) · [Measures](#measures) · [Calculation groups](#calculation-groups) · [Relationships](#relationships) · [Row-level security](#row-level-security) · [Parameters and shared queries](#parameters-and-shared-queries) · [Report](#report) · [Quality checks](#quality-checks)
@@ -310,6 +310,8 @@ CALCULATE (
 
 #### Discounts
 
+Discount amount granted on delivered and shipped orders.
+
 Format `#,0 €` · **not used**
 
 ```dax
@@ -324,6 +326,8 @@ CALCULATE (
 
 #### Discount %
 
+Discounts as a share of gross revenue.
+
 Format `0.0%` · **not used**
 
 ```dax
@@ -333,6 +337,8 @@ DIVIDE ( [Discounts], [Gross Revenue] )
 - **Depends on:** `[Discounts]`, `[Gross Revenue]`
 
 #### Units
+
+Units sold in delivered and shipped orders.
 
 Format `#,0` · **not used**
 
@@ -346,6 +352,8 @@ CALCULATE (
 - **Depends on:** `'Sales'[Is Revenue]`, `'Sales'[Quantity]`
 
 #### Orders
+
+Distinct delivered and shipped orders.
 
 Format `#,0`
 
@@ -393,6 +401,8 @@ CALCULATE (
 
 #### Gross Margin %
 
+Gross margin as a share of net revenue.
+
 Format `0.0%`
 
 ```dax
@@ -438,6 +448,8 @@ CALCULATE (
 
 #### Revenue per Customer
 
+Net revenue divided by active customers.
+
 Format `#,0.00 €` · **not used**
 
 ```dax
@@ -463,6 +475,8 @@ DISTINCTCOUNT ( Sales[Order ID] )
 
 #### Cancelled Orders
 
+Orders with status cancelled.
+
 Format `#,0` · **not used**
 
 ```dax
@@ -473,6 +487,8 @@ CALCULATE ( [All Orders], KEEPFILTERS ( Sales[Status] = "cancelled" ) )
 - **Used by:** `[Cancellation Rate]`
 
 #### Returned Orders
+
+Orders with status returned.
 
 Format `#,0` · **not used**
 
@@ -485,6 +501,8 @@ CALCULATE ( [All Orders], KEEPFILTERS ( Sales[Status] = "returned" ) )
 
 #### Cancellation Rate
 
+Cancelled orders as a share of all orders.
+
 Format `0.0%` · **not used**
 
 ```dax
@@ -494,6 +512,8 @@ DIVIDE ( [Cancelled Orders], [All Orders] )
 - **Depends on:** `[All Orders]`, `[Cancelled Orders]`
 
 #### Return Rate
+
+Returned orders as a share of all orders.
 
 Format `0.0%` · **not used**
 
@@ -616,16 +636,6 @@ Customers[Region]
 
 | Severity | Rule | Object | Finding |
 |---|---|---|---|
-| warning | PBD002 | `[Cancellation Rate]` | Visible measure without a description |
-| warning | PBD002 | `[Cancelled Orders]` | Visible measure without a description |
-| warning | PBD002 | `[Discount %]` | Visible measure without a description |
-| warning | PBD002 | `[Discounts]` | Visible measure without a description |
-| warning | PBD002 | `[Gross Margin %]` | Visible measure without a description |
-| warning | PBD002 | `[Orders]` | Visible measure without a description |
-| warning | PBD002 | `[Return Rate]` | Visible measure without a description |
-| warning | PBD002 | `[Returned Orders]` | Visible measure without a description |
-| warning | PBD002 | `[Revenue per Customer]` | Visible measure without a description |
-| warning | PBD002 | `[Units]` | Visible measure without a description |
 | info | PBD008 | `[All Orders]` | Measure not used by the report or by other used objects |
 | info | PBD008 | `[Cancellation Rate]` | Measure not used by the report or by other used objects |
 | info | PBD008 | `[Cancelled Orders]` | Measure not used by the report or by other used objects |

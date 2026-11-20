@@ -49,7 +49,7 @@
             "table": "_Measures",
             "name": "Discounts",
             "expression": "CALCULATE (\n    SUM ( Sales[Discount Amount] ),\n    KEEPFILTERS ( Sales[Is Revenue] = TRUE () )\n)",
-            "description": null,
+            "description": "Discount amount granted on delivered and shipped orders.",
             "format_string": "#,0 €",
             "display_folder": "1. Sales",
             "is_hidden": false
@@ -58,7 +58,7 @@
             "table": "_Measures",
             "name": "Discount %",
             "expression": "DIVIDE ( [Discounts], [Gross Revenue] )",
-            "description": null,
+            "description": "Discounts as a share of gross revenue.",
             "format_string": "0.0%",
             "display_folder": "1. Sales",
             "is_hidden": false
@@ -67,7 +67,7 @@
             "table": "_Measures",
             "name": "Units",
             "expression": "CALCULATE (\n    SUM ( Sales[Quantity] ),\n    KEEPFILTERS ( Sales[Is Revenue] = TRUE () )\n)",
-            "description": null,
+            "description": "Units sold in delivered and shipped orders.",
             "format_string": "#,0",
             "display_folder": "1. Sales",
             "is_hidden": false
@@ -76,7 +76,7 @@
             "table": "_Measures",
             "name": "Orders",
             "expression": "CALCULATE (\n    DISTINCTCOUNT ( Sales[Order ID] ),\n    KEEPFILTERS ( Sales[Is Revenue] = TRUE () )\n)",
-            "description": null,
+            "description": "Distinct delivered and shipped orders.",
             "format_string": "#,0",
             "display_folder": "1. Sales",
             "is_hidden": false
@@ -103,7 +103,7 @@
             "table": "_Measures",
             "name": "Gross Margin %",
             "expression": "DIVIDE ( [Gross Margin], [Net Revenue] )",
-            "description": null,
+            "description": "Gross margin as a share of net revenue.",
             "format_string": "0.0%",
             "display_folder": "2. Profitability",
             "is_hidden": false
@@ -130,7 +130,7 @@
             "table": "_Measures",
             "name": "Revenue per Customer",
             "expression": "DIVIDE ( [Net Revenue], [Active Customers] )",
-            "description": null,
+            "description": "Net revenue divided by active customers.",
             "format_string": "#,0.00 €",
             "display_folder": "3. Customers",
             "is_hidden": false
@@ -148,7 +148,7 @@
             "table": "_Measures",
             "name": "Cancelled Orders",
             "expression": "CALCULATE ( [All Orders], KEEPFILTERS ( Sales[Status] = \"cancelled\" ) )",
-            "description": null,
+            "description": "Orders with status cancelled.",
             "format_string": "#,0",
             "display_folder": "4. Order quality",
             "is_hidden": false
@@ -157,7 +157,7 @@
             "table": "_Measures",
             "name": "Returned Orders",
             "expression": "CALCULATE ( [All Orders], KEEPFILTERS ( Sales[Status] = \"returned\" ) )",
-            "description": null,
+            "description": "Orders with status returned.",
             "format_string": "#,0",
             "display_folder": "4. Order quality",
             "is_hidden": false
@@ -166,7 +166,7 @@
             "table": "_Measures",
             "name": "Cancellation Rate",
             "expression": "DIVIDE ( [Cancelled Orders], [All Orders] )",
-            "description": null,
+            "description": "Cancelled orders as a share of all orders.",
             "format_string": "0.0%",
             "display_folder": "4. Order quality",
             "is_hidden": false
@@ -175,7 +175,7 @@
             "table": "_Measures",
             "name": "Return Rate",
             "expression": "DIVIDE ( [Returned Orders], [All Orders] )",
-            "description": null,
+            "description": "Returned orders as a share of all orders.",
             "format_string": "0.0%",
             "display_folder": "4. Order quality",
             "is_hidden": false
@@ -1726,66 +1726,6 @@
     "filters": []
   },
   "findings": [
-    {
-      "severity": "warning",
-      "code": "PBD002",
-      "object": "[Cancellation Rate]",
-      "message": "Visible measure without a description"
-    },
-    {
-      "severity": "warning",
-      "code": "PBD002",
-      "object": "[Cancelled Orders]",
-      "message": "Visible measure without a description"
-    },
-    {
-      "severity": "warning",
-      "code": "PBD002",
-      "object": "[Discount %]",
-      "message": "Visible measure without a description"
-    },
-    {
-      "severity": "warning",
-      "code": "PBD002",
-      "object": "[Discounts]",
-      "message": "Visible measure without a description"
-    },
-    {
-      "severity": "warning",
-      "code": "PBD002",
-      "object": "[Gross Margin %]",
-      "message": "Visible measure without a description"
-    },
-    {
-      "severity": "warning",
-      "code": "PBD002",
-      "object": "[Orders]",
-      "message": "Visible measure without a description"
-    },
-    {
-      "severity": "warning",
-      "code": "PBD002",
-      "object": "[Return Rate]",
-      "message": "Visible measure without a description"
-    },
-    {
-      "severity": "warning",
-      "code": "PBD002",
-      "object": "[Returned Orders]",
-      "message": "Visible measure without a description"
-    },
-    {
-      "severity": "warning",
-      "code": "PBD002",
-      "object": "[Revenue per Customer]",
-      "message": "Visible measure without a description"
-    },
-    {
-      "severity": "warning",
-      "code": "PBD002",
-      "object": "[Units]",
-      "message": "Visible measure without a description"
-    },
     {
       "severity": "info",
       "code": "PBD008",
