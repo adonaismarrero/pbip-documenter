@@ -1,0 +1,64 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  python:
+    name: Lint, types and tests
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: ["3.11", "3.12", "3.13"]
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Install
+        run: pip install --quiet -e ".[dev]"
+      - name: Ruff
+        run: |
+          ruff check .
+          ruff format --check .
+      - name: Mypy (strict)
+        run: mypy
+      - name: Tests
+        run: pytest --cov-fail-under=90
+
+  example:
+    name: Example docs match the public sample model
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/checkout@v5
+        with:
+          repository: adonaismarrero/powerbi-sales-semantic-model
+          path: _sample
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+      - name: Regenerate and compare
+        run: |
+          pip install --quiet .
+          pbip-doc build _sample/SalesAnalytics.pbip \
+            -o examples/SalesAnalytics/MODEL.md --json examples/SalesAnalytics/model.json
+          git diff --exit-code -- examples
+
+  action:
+    name: The GitHub Action works
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: ./
+        with:
+          path: tests/fixtures/Mini/Mini.pbip
+          output: out/MODEL.md
+          fail-on: never
+      - name: Output exists
+        run: test -s out/MODEL.md

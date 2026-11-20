@@ -1,0 +1,52 @@
+name: PBIP documenter
+description: Document and lint a Power BI project (PBIP with TMDL model and PBIR report).
+author: adonaismarrero
+branding:
+  icon: book-open
+  color: yellow
+
+inputs:
+  path:
+    description: ".pbip file, project folder or *.SemanticModel folder."
+    required: true
+  output:
+    description: "Markdown file to write. Leave empty to only run the checks."
+    required: false
+    default: ""
+  fail-on:
+    description: "Lowest severity that fails the step: error, warning, info or never."
+    required: false
+    default: "error"
+  ignore:
+    description: "Comma-separated rule codes to skip, e.g. PBD004,PBD009."
+    required: false
+    default: ""
+
+runs:
+  using: composite
+  steps:
+    - uses: actions/setup-python@v6
+      with:
+        python-version: "3.12"
+    - name: Install pbip-doc
+      shell: bash
+      run: pip install --quiet "$GITHUB_ACTION_PATH"
+    # Inputs go through environment variables, never straight into the script (no injection).
+    - name: Build documentation
+      if: inputs.output != ''
+      shell: bash
+      env:
+        PBIP_PATH: ${{ inputs.path }}
+        PBIP_OUTPUT: ${{ inputs.output }}
+        PBIP_IGNORE: ${{ inputs.ignore }}
+      run: pbip-doc build "$PBIP_PATH" -o "$PBIP_OUTPUT" --ignore "$PBIP_IGNORE"
+    - name: Quality checks
+      shell: bash
+      env:
+        PBIP_PATH: ${{ inputs.path }}
+        PBIP_FAIL_ON: ${{ inputs.fail-on }}
+        PBIP_IGNORE: ${{ inputs.ignore }}
+      run: |
+        set -o pipefail
+        pbip-doc check "$PBIP_PATH" --fail-on "$PBIP_FAIL_ON" --ignore "$PBIP_IGNORE" \
+          | tee -a "$GITHUB_STEP_SUMMARY"

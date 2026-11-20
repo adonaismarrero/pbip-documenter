@@ -1,0 +1,10 @@
+table Store
+
+	column 'Store ID'
+		dataType: int64
+		isHidden
+		sourceColumn: store_id
+
+	column Region
+		dataType: string
+		sourceColumn: region

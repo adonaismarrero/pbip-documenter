@@ -1,0 +1,6 @@
+/// Server name.
+expression Server = "localhost" meta [IsParameterQuery=true, Type="Text", IsParameterQueryRequired=true]
+
+expression Helper =
+		(x as number) as number =>
+		    x + 1

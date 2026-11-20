@@ -1,0 +1,59 @@
+/// Fact table.
+table Fact
+
+	column 'Order Date'
+		dataType: dateTime
+		isHidden
+		sourceColumn: order_date
+
+	column 'Ship Date'
+		dataType: dateTime
+		isHidden
+		sourceColumn: ship_date
+
+	column 'Store ID'
+		dataType: int64
+		sourceColumn: store_id
+
+	column Amount
+		dataType: decimal
+		isHidden
+		sourceColumn: amount
+
+	/// Calculated column on the fact.
+	column 'Big Sale' = Fact[Amount] > 100
+		dataType: boolean
+
+	/// Total amount.
+	measure 'Total Amount' = SUM ( Fact[Amount] )
+		formatString: #,0
+		displayFolder: Sales
+
+	measure 'Customer''s Share' = ```
+			VAR t = ADDCOLUMNS ( VALUES ( 'Date'[Year] ), "Year Total", [Total Amount] )
+			// a comment with [Not A Ref]
+			RETURN DIVIDE ( [Total Amount], SUMX ( t, [Year Total] ) ) & "[not a ref]"
+			```
+		displayFolder: Sales
+
+	/// Uses the inactive relationship, so PBD010 must not fire for Ship Date.
+	measure 'Shipped Amount' =
+			CALCULATE (
+			    [Total Amount],
+			    USERELATIONSHIP ( Fact[Ship Date], 'Date'[Date] )
+			)
+		formatString: #,0
+		displayFolder: Sales
+
+	/// Points to objects that do not exist.
+	measure Broken = [Missing Measure] + Fact[No Such Column]
+		formatString: 0
+		displayFolder: Sales
+
+	partition Fact = m
+		mode: import
+		source =
+				let
+				    Source = #table({"order_date"}, {})
+				in
+				    Source

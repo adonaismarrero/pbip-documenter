@@ -1,0 +1,1946 @@
+{
+  "generator": "pbip-doc 1.0.0",
+  "model": {
+    "name": "SalesAnalytics",
+    "culture": "en-US",
+    "compatibility_level": "1606",
+    "tables": [
+      {
+        "name": "_Measures",
+        "description": "Home table for all measures, grouped in display folders.\nCombine any measure with the 'Time Intelligence' calculation group for MTD, YTD, PY and YoY.",
+        "is_hidden": false,
+        "data_category": null,
+        "columns": [
+          {
+            "table": "_Measures",
+            "name": "Placeholder",
+            "data_type": "int64",
+            "description": null,
+            "is_hidden": true,
+            "is_key": false,
+            "format_string": "0",
+            "display_folder": null,
+            "source_column": "Placeholder",
+            "expression": null,
+            "sort_by": null,
+            "data_category": null
+          }
+        ],
+        "measures": [
+          {
+            "table": "_Measures",
+            "name": "Net Revenue",
+            "expression": "CALCULATE (\n    SUM ( Sales[Net Amount] ),\n    KEEPFILTERS ( Sales[Is Revenue] = TRUE () )\n)",
+            "description": "Revenue after discounts, VAT excluded, of delivered and shipped orders.",
+            "format_string": "#,0 €",
+            "display_folder": "1. Sales",
+            "is_hidden": false
+          },
+          {
+            "table": "_Measures",
+            "name": "Gross Revenue",
+            "expression": "CALCULATE (\n    SUM ( Sales[Gross Amount] ),\n    KEEPFILTERS ( Sales[Is Revenue] = TRUE () )\n)",
+            "description": "Revenue before discounts.",
+            "format_string": "#,0 €",
+            "display_folder": "1. Sales",
+            "is_hidden": false
+          },
+          {
+            "table": "_Measures",
+            "name": "Discounts",
+            "expression": "CALCULATE (\n    SUM ( Sales[Discount Amount] ),\n    KEEPFILTERS ( Sales[Is Revenue] = TRUE () )\n)",
+            "description": null,
+            "format_string": "#,0 €",
+            "display_folder": "1. Sales",
+            "is_hidden": false
+          },
+          {
+            "table": "_Measures",
+            "name": "Discount %",
+            "expression": "DIVIDE ( [Discounts], [Gross Revenue] )",
+            "description": null,
+            "format_string": "0.0%",
+            "display_folder": "1. Sales",
+            "is_hidden": false
+          },
+          {
+            "table": "_Measures",
+            "name": "Units",
+            "expression": "CALCULATE (\n    SUM ( Sales[Quantity] ),\n    KEEPFILTERS ( Sales[Is Revenue] = TRUE () )\n)",
+            "description": null,
+            "format_string": "#,0",
+            "display_folder": "1. Sales",
+            "is_hidden": false
+          },
+          {
+            "table": "_Measures",
+            "name": "Orders",
+            "expression": "CALCULATE (\n    DISTINCTCOUNT ( Sales[Order ID] ),\n    KEEPFILTERS ( Sales[Is Revenue] = TRUE () )\n)",
+            "description": null,
+            "format_string": "#,0",
+            "display_folder": "1. Sales",
+            "is_hidden": false
+          },
+          {
+            "table": "_Measures",
+            "name": "Avg Order Value",
+            "expression": "DIVIDE ( [Net Revenue], [Orders] )",
+            "description": "Average revenue per order (AOV).",
+            "format_string": "#,0.00 €",
+            "display_folder": "1. Sales",
+            "is_hidden": false
+          },
+          {
+            "table": "_Measures",
+            "name": "Gross Margin",
+            "expression": "CALCULATE (\n    SUM ( Sales[Margin Amount] ),\n    KEEPFILTERS ( Sales[Is Revenue] = TRUE () )\n)",
+            "description": "Net revenue minus cost of goods sold.",
+            "format_string": "#,0 €",
+            "display_folder": "2. Profitability",
+            "is_hidden": false
+          },
+          {
+            "table": "_Measures",
+            "name": "Gross Margin %",
+            "expression": "DIVIDE ( [Gross Margin], [Net Revenue] )",
+            "description": null,
+            "format_string": "0.0%",
+            "display_folder": "2. Profitability",
+            "is_hidden": false
+          },
+          {
+            "table": "_Measures",
+            "name": "Active Customers",
+            "expression": "CALCULATE (\n    DISTINCTCOUNT ( Sales[Customer ID] ),\n    KEEPFILTERS ( Sales[Is Revenue] = TRUE () )\n)",
+            "description": "Customers with at least one revenue order in the selected period.",
+            "format_string": "#,0",
+            "display_folder": "3. Customers",
+            "is_hidden": false
+          },
+          {
+            "table": "_Measures",
+            "name": "New Customers",
+            "expression": "CALCULATE (\n    COUNTROWS ( Customers ),\n    TREATAS ( VALUES ( 'Date'[Date] ), Customers[First Order Date] )\n)",
+            "description": "Customers whose first revenue order falls in the selected period.",
+            "format_string": "#,0",
+            "display_folder": "3. Customers",
+            "is_hidden": false
+          },
+          {
+            "table": "_Measures",
+            "name": "Revenue per Customer",
+            "expression": "DIVIDE ( [Net Revenue], [Active Customers] )",
+            "description": null,
+            "format_string": "#,0.00 €",
+            "display_folder": "3. Customers",
+            "is_hidden": false
+          },
+          {
+            "table": "_Measures",
+            "name": "All Orders",
+            "expression": "DISTINCTCOUNT ( Sales[Order ID] )",
+            "description": "All orders, whatever their status.",
+            "format_string": "#,0",
+            "display_folder": "4. Order quality",
+            "is_hidden": false
+          },
+          {
+            "table": "_Measures",
+            "name": "Cancelled Orders",
+            "expression": "CALCULATE ( [All Orders], KEEPFILTERS ( Sales[Status] = \"cancelled\" ) )",
+            "description": null,
+            "format_string": "#,0",
+            "display_folder": "4. Order quality",
+            "is_hidden": false
+          },
+          {
+            "table": "_Measures",
+            "name": "Returned Orders",
+            "expression": "CALCULATE ( [All Orders], KEEPFILTERS ( Sales[Status] = \"returned\" ) )",
+            "description": null,
+            "format_string": "#,0",
+            "display_folder": "4. Order quality",
+            "is_hidden": false
+          },
+          {
+            "table": "_Measures",
+            "name": "Cancellation Rate",
+            "expression": "DIVIDE ( [Cancelled Orders], [All Orders] )",
+            "description": null,
+            "format_string": "0.0%",
+            "display_folder": "4. Order quality",
+            "is_hidden": false
+          },
+          {
+            "table": "_Measures",
+            "name": "Return Rate",
+            "expression": "DIVIDE ( [Returned Orders], [All Orders] )",
+            "description": null,
+            "format_string": "0.0%",
+            "display_folder": "4. Order quality",
+            "is_hidden": false
+          }
+        ],
+        "hierarchies": [],
+        "partitions": [
+          {
+            "name": "_Measures",
+            "kind": "m",
+            "mode": "import",
+            "source": "let\n    Source = #table(type table [Placeholder = Int64.Type], {})\nin\n    Source"
+          }
+        ],
+        "calculation_items": [],
+        "calculation_group_precedence": null
+      },
+      {
+        "name": "Customers",
+        "description": "Customer dimension (marts.dim_customers). Row-level security filters this table by region.",
+        "is_hidden": false,
+        "data_category": null,
+        "columns": [
+          {
+            "table": "Customers",
+            "name": "Customer ID",
+            "data_type": "int64",
+            "description": null,
+            "is_hidden": true,
+            "is_key": true,
+            "format_string": "0",
+            "display_folder": null,
+            "source_column": "customer_id",
+            "expression": null,
+            "sort_by": null,
+            "data_category": null
+          },
+          {
+            "table": "Customers",
+            "name": "Customer",
+            "data_type": "string",
+            "description": null,
+            "is_hidden": false,
+            "is_key": false,
+            "format_string": null,
+            "display_folder": null,
+            "source_column": "full_name",
+            "expression": null,
+            "sort_by": null,
+            "data_category": null
+          },
+          {
+            "table": "Customers",
+            "name": "City",
+            "data_type": "string",
+            "description": null,
+            "is_hidden": false,
+            "is_key": false,
+            "format_string": null,
+            "display_folder": null,
+            "source_column": "city",
+            "expression": null,
+            "sort_by": null,
+            "data_category": "City"
+          },
+          {
+            "table": "Customers",
+            "name": "Region",
+            "data_type": "string",
+            "description": null,
+            "is_hidden": false,
+            "is_key": false,
+            "format_string": null,
+            "display_folder": null,
+            "source_column": "region",
+            "expression": null,
+            "sort_by": null,
+            "data_category": "StateOrProvince"
+          },
+          {
+            "table": "Customers",
+            "name": "Country",
+            "data_type": "string",
+            "description": null,
+            "is_hidden": false,
+            "is_key": false,
+            "format_string": null,
+            "display_folder": null,
+            "source_column": "country",
+            "expression": null,
+            "sort_by": null,
+            "data_category": "Country"
+          },
+          {
+            "table": "Customers",
+            "name": "Signup Date",
+            "data_type": "dateTime",
+            "description": null,
+            "is_hidden": false,
+            "is_key": false,
+            "format_string": "yyyy-mm-dd",
+            "display_folder": null,
+            "source_column": "signup_date",
+            "expression": null,
+            "sort_by": null,
+            "data_category": null
+          },
+          {
+            "table": "Customers",
+            "name": "First Order Date",
+            "data_type": "dateTime",
+            "description": "Date of the first revenue order. Used by the New Customers measure.",
+            "is_hidden": false,
+            "is_key": false,
+            "format_string": "yyyy-mm-dd",
+            "display_folder": null,
+            "source_column": "first_order_date",
+            "expression": null,
+            "sort_by": null,
+            "data_category": null
+          },
+          {
+            "table": "Customers",
+            "name": "Last Order Date",
+            "data_type": "dateTime",
+            "description": null,
+            "is_hidden": false,
+            "is_key": false,
+            "format_string": "yyyy-mm-dd",
+            "display_folder": null,
+            "source_column": "last_order_date",
+            "expression": null,
+            "sort_by": null,
+            "data_category": null
+          },
+          {
+            "table": "Customers",
+            "name": "Segment",
+            "data_type": "string",
+            "description": "new / occasional / regular / vip.",
+            "is_hidden": false,
+            "is_key": false,
+            "format_string": null,
+            "display_folder": null,
+            "source_column": "customer_segment",
+            "expression": null,
+            "sort_by": "Segment Order",
+            "data_category": null
+          },
+          {
+            "table": "Customers",
+            "name": "Segment Order",
+            "data_type": "int64",
+            "description": "Sort order of Segment. Calculated in Power Query: a DAX calculated column based on\nSegment would create a circular dependency with the sort-by-column setting.",
+            "is_hidden": true,
+            "is_key": false,
+            "format_string": "0",
+            "display_folder": null,
+            "source_column": "segment_order",
+            "expression": null,
+            "sort_by": null,
+            "data_category": null
+          }
+        ],
+        "measures": [],
+        "hierarchies": [],
+        "partitions": [
+          {
+            "name": "Customers",
+            "kind": "m",
+            "mode": "import",
+            "source": "let\n    Source = LoadMart(\"dim_customers\"),\n    Selected = Table.SelectColumns(Source, {\n        \"customer_id\", \"full_name\", \"city\", \"region\", \"country\",\n        \"signup_date\", \"first_order_date\", \"last_order_date\", \"customer_segment\"\n    }),\n    Typed = Table.TransformColumnTypes(Selected, {\n        {\"customer_id\", Int64.Type}, {\"full_name\", type text}, {\"city\", type text},\n        {\"region\", type text}, {\"country\", type text}, {\"signup_date\", type date},\n        {\"first_order_date\", type date}, {\"last_order_date\", type date},\n        {\"customer_segment\", type text}\n    }, \"en-US\"),\n    WithOrder = Table.AddColumn(Typed, \"segment_order\",\n        each List.PositionOf({\"new\", \"occasional\", \"regular\", \"vip\"}, [customer_segment]) + 1,\n        Int64.Type)\nin\n    WithOrder"
+          }
+        ],
+        "calculation_items": [],
+        "calculation_group_precedence": null
+      },
+      {
+        "name": "Date",
+        "description": "Calendar (marts.dim_date), marked as the date table of the model.",
+        "is_hidden": false,
+        "data_category": "Time",
+        "columns": [
+          {
+            "table": "Date",
+            "name": "Date",
+            "data_type": "dateTime",
+            "description": null,
+            "is_hidden": false,
+            "is_key": true,
+            "format_string": "yyyy-mm-dd",
+            "display_folder": null,
+            "source_column": "date_day",
+            "expression": null,
+            "sort_by": null,
+            "data_category": null
+          },
+          {
+            "table": "Date",
+            "name": "Year",
+            "data_type": "int64",
+            "description": null,
+            "is_hidden": false,
+            "is_key": false,
+            "format_string": "0",
+            "display_folder": null,
+            "source_column": "year",
+            "expression": null,
+            "sort_by": null,
+            "data_category": null
+          },
+          {
+            "table": "Date",
+            "name": "Quarter",
+            "data_type": "int64",
+            "description": null,
+            "is_hidden": true,
+            "is_key": false,
+            "format_string": "0",
+            "display_folder": null,
+            "source_column": "quarter",
+            "expression": null,
+            "sort_by": null,
+            "data_category": null
+          },
+          {
+            "table": "Date",
+            "name": "Quarter Label",
+            "data_type": "string",
+            "description": null,
+            "is_hidden": false,
+            "is_key": false,
+            "format_string": null,
+            "display_folder": null,
+            "source_column": null,
+            "expression": "\"Q\" & 'Date'[Quarter]",
+            "sort_by": "Quarter",
+            "data_category": null
+          },
+          {
+            "table": "Date",
+            "name": "Month",
+            "data_type": "int64",
+            "description": null,
+            "is_hidden": true,
+            "is_key": false,
+            "format_string": "0",
+            "display_folder": null,
+            "source_column": "month",
+            "expression": null,
+            "sort_by": null,
+            "data_category": null
+          },
+          {
+            "table": "Date",
+            "name": "Month Name",
+            "data_type": "string",
+            "description": null,
+            "is_hidden": false,
+            "is_key": false,
+            "format_string": null,
+            "display_folder": null,
+            "source_column": null,
+            "expression": "FORMAT ( 'Date'[Date], \"MMM\" )",
+            "sort_by": "Month",
+            "data_category": null
+          },
+          {
+            "table": "Date",
+            "name": "Year Month",
+            "data_type": "string",
+            "description": "Year and month as text (2025-01), sorts chronologically.",
+            "is_hidden": false,
+            "is_key": false,
+            "format_string": null,
+            "display_folder": null,
+            "source_column": "year_month",
+            "expression": null,
+            "sort_by": null,
+            "data_category": null
+          },
+          {
+            "table": "Date",
+            "name": "ISO Week",
+            "data_type": "int64",
+            "description": null,
+            "is_hidden": false,
+            "is_key": false,
+            "format_string": "0",
+            "display_folder": null,
+            "source_column": "iso_week",
+            "expression": null,
+            "sort_by": null,
+            "data_category": null
+          },
+          {
+            "table": "Date",
+            "name": "Day of Week",
+            "data_type": "int64",
+            "description": null,
+            "is_hidden": true,
+            "is_key": false,
+            "format_string": "0",
+            "display_folder": null,
+            "source_column": "day_of_week",
+            "expression": null,
+            "sort_by": null,
+            "data_category": null
+          },
+          {
+            "table": "Date",
+            "name": "Day Name",
+            "data_type": "string",
+            "description": null,
+            "is_hidden": false,
+            "is_key": false,
+            "format_string": null,
+            "display_folder": null,
+            "source_column": "day_name",
+            "expression": null,
+            "sort_by": "Day of Week",
+            "data_category": null
+          },
+          {
+            "table": "Date",
+            "name": "Is Weekend",
+            "data_type": "boolean",
+            "description": null,
+            "is_hidden": false,
+            "is_key": false,
+            "format_string": "\"\"\"TRUE\"\";\"\"TRUE\"\";\"\"FALSE\"\"\"",
+            "display_folder": null,
+            "source_column": "is_weekend",
+            "expression": null,
+            "sort_by": null,
+            "data_category": null
+          },
+          {
+            "table": "Date",
+            "name": "Date With Sales",
+            "data_type": "boolean",
+            "description": "TRUE up to the last order date. Time-intelligence items shift only these dates, so\nfuture years of the calendar do not show a previous-year value without current sales.",
+            "is_hidden": true,
+            "is_key": false,
+            "format_string": "\"\"\"TRUE\"\";\"\"TRUE\"\";\"\"FALSE\"\"\"",
+            "display_folder": null,
+            "source_column": null,
+            "expression": "'Date'[Date] <= MAX ( Sales[Order Date] )",
+            "sort_by": null,
+            "data_category": null
+          }
+        ],
+        "measures": [],
+        "hierarchies": [
+          {
+            "name": "Calendar",
+            "levels": [
+              [
+                "Year",
+                "Year"
+              ],
+              [
+                "Quarter",
+                "Quarter Label"
+              ],
+              [
+                "Month",
+                "Month Name"
+              ],
+              [
+                "Day",
+                "Date"
+              ]
+            ]
+          }
+        ],
+        "partitions": [
+          {
+            "name": "Date",
+            "kind": "m",
+            "mode": "import",
+            "source": "let\n    Source = LoadMart(\"dim_date\"),\n    Selected = Table.SelectColumns(Source, {\n        \"date_day\", \"year\", \"quarter\", \"month\", \"year_month\",\n        \"iso_week\", \"day_of_week\", \"day_name\", \"is_weekend\"\n    }),\n    Typed = Table.TransformColumnTypes(Selected, {\n        {\"date_day\", type date}, {\"year\", Int64.Type}, {\"quarter\", Int64.Type},\n        {\"month\", Int64.Type}, {\"year_month\", type text}, {\"iso_week\", Int64.Type},\n        {\"day_of_week\", Int64.Type}, {\"day_name\", type text}, {\"is_weekend\", type logical}\n    }, \"en-US\")\nin\n    Typed"
+          }
+        ],
+        "calculation_items": [],
+        "calculation_group_precedence": null
+      },
+      {
+        "name": "Products",
+        "description": "Product dimension (marts.dim_products).",
+        "is_hidden": false,
+        "data_category": null,
+        "columns": [
+          {
+            "table": "Products",
+            "name": "Product ID",
+            "data_type": "int64",
+            "description": null,
+            "is_hidden": true,
+            "is_key": true,
+            "format_string": "0",
+            "display_folder": null,
+            "source_column": "product_id",
+            "expression": null,
+            "sort_by": null,
+            "data_category": null
+          },
+          {
+            "table": "Products",
+            "name": "Product",
+            "data_type": "string",
+            "description": null,
+            "is_hidden": false,
+            "is_key": false,
+            "format_string": null,
+            "display_folder": null,
+            "source_column": "product_name",
+            "expression": null,
+            "sort_by": null,
+            "data_category": null
+          },
+          {
+            "table": "Products",
+            "name": "Category",
+            "data_type": "string",
+            "description": null,
+            "is_hidden": false,
+            "is_key": false,
+            "format_string": null,
+            "display_folder": null,
+            "source_column": "category",
+            "expression": null,
+            "sort_by": null,
+            "data_category": null
+          },
+          {
+            "table": "Products",
+            "name": "Unit Price",
+            "data_type": "decimal",
+            "description": "Current list price per unit (EUR, VAT excluded).",
+            "is_hidden": false,
+            "is_key": false,
+            "format_string": "#,0.00 €",
+            "display_folder": null,
+            "source_column": "unit_price",
+            "expression": null,
+            "sort_by": null,
+            "data_category": null
+          },
+          {
+            "table": "Products",
+            "name": "Unit Margin %",
+            "data_type": "double",
+            "description": null,
+            "is_hidden": false,
+            "is_key": false,
+            "format_string": "0.0%",
+            "display_folder": null,
+            "source_column": "unit_margin_pct",
+            "expression": null,
+            "sort_by": null,
+            "data_category": null
+          },
+          {
+            "table": "Products",
+            "name": "Price Band",
+            "data_type": "string",
+            "description": null,
+            "is_hidden": false,
+            "is_key": false,
+            "format_string": null,
+            "display_folder": null,
+            "source_column": "price_band",
+            "expression": null,
+            "sort_by": "Price Band Order",
+            "data_category": null
+          },
+          {
+            "table": "Products",
+            "name": "Is Active",
+            "data_type": "boolean",
+            "description": null,
+            "is_hidden": false,
+            "is_key": false,
+            "format_string": "\"\"\"TRUE\"\";\"\"TRUE\"\";\"\"FALSE\"\"\"",
+            "display_folder": null,
+            "source_column": "is_active",
+            "expression": null,
+            "sort_by": null,
+            "data_category": null
+          },
+          {
+            "table": "Products",
+            "name": "Price Band Order",
+            "data_type": "int64",
+            "description": "Sort order of Price Band, calculated in Power Query (see Customers[Segment Order]).",
+            "is_hidden": true,
+            "is_key": false,
+            "format_string": "0",
+            "display_folder": null,
+            "source_column": "price_band_order",
+            "expression": null,
+            "sort_by": null,
+            "data_category": null
+          }
+        ],
+        "measures": [],
+        "hierarchies": [],
+        "partitions": [
+          {
+            "name": "Products",
+            "kind": "m",
+            "mode": "import",
+            "source": "let\n    Source = LoadMart(\"dim_products\"),\n    Selected = Table.SelectColumns(Source, {\n        \"product_id\", \"product_name\", \"category\", \"unit_price\",\n        \"unit_margin_pct\", \"price_band\", \"is_active\"\n    }),\n    Typed = Table.TransformColumnTypes(Selected, {\n        {\"product_id\", Int64.Type}, {\"product_name\", type text}, {\"category\", type text},\n        {\"unit_price\", Currency.Type}, {\"unit_margin_pct\", type number},\n        {\"price_band\", type text}, {\"is_active\", type logical}\n    }, \"en-US\"),\n    WithOrder = Table.AddColumn(Typed, \"price_band_order\",\n        each List.PositionOf({\"0-25\", \"25-100\", \"100-300\", \"300+\"}, [price_band]) + 1,\n        Int64.Type)\nin\n    WithOrder"
+          }
+        ],
+        "calculation_items": [],
+        "calculation_group_precedence": null
+      },
+      {
+        "name": "Sales",
+        "description": "Sales fact at order-line grain (marts.fct_sales). Numeric columns are hidden: use the measures.",
+        "is_hidden": false,
+        "data_category": null,
+        "columns": [
+          {
+            "table": "Sales",
+            "name": "Order Item ID",
+            "data_type": "int64",
+            "description": null,
+            "is_hidden": true,
+            "is_key": true,
+            "format_string": "0",
+            "display_folder": null,
+            "source_column": "order_item_id",
+            "expression": null,
+            "sort_by": null,
+            "data_category": null
+          },
+          {
+            "table": "Sales",
+            "name": "Order ID",
+            "data_type": "int64",
+            "description": null,
+            "is_hidden": true,
+            "is_key": false,
+            "format_string": "0",
+            "display_folder": null,
+            "source_column": "order_id",
+            "expression": null,
+            "sort_by": null,
+            "data_category": null
+          },
+          {
+            "table": "Sales",
+            "name": "Order Date",
+            "data_type": "dateTime",
+            "description": null,
+            "is_hidden": true,
+            "is_key": false,
+            "format_string": "yyyy-mm-dd",
+            "display_folder": null,
+            "source_column": "order_date",
+            "expression": null,
+            "sort_by": null,
+            "data_category": null
+          },
+          {
+            "table": "Sales",
+            "name": "Customer ID",
+            "data_type": "int64",
+            "description": null,
+            "is_hidden": true,
+            "is_key": false,
+            "format_string": "0",
+            "display_folder": null,
+            "source_column": "customer_id",
+            "expression": null,
+            "sort_by": null,
+            "data_category": null
+          },
+          {
+            "table": "Sales",
+            "name": "Product ID",
+            "data_type": "int64",
+            "description": null,
+            "is_hidden": true,
+            "is_key": false,
+            "format_string": "0",
+            "display_folder": null,
+            "source_column": "product_id",
+            "expression": null,
+            "sort_by": null,
+            "data_category": null
+          },
+          {
+            "table": "Sales",
+            "name": "Channel",
+            "data_type": "string",
+            "description": "Sales channel: web, app or marketplace.",
+            "is_hidden": false,
+            "is_key": false,
+            "format_string": null,
+            "display_folder": null,
+            "source_column": "channel",
+            "expression": null,
+            "sort_by": null,
+            "data_category": null
+          },
+          {
+            "table": "Sales",
+            "name": "Payment Method",
+            "data_type": "string",
+            "description": null,
+            "is_hidden": false,
+            "is_key": false,
+            "format_string": null,
+            "display_folder": null,
+            "source_column": "payment_method",
+            "expression": null,
+            "sort_by": null,
+            "data_category": null
+          },
+          {
+            "table": "Sales",
+            "name": "Status",
+            "data_type": "string",
+            "description": "delivered, shipped, cancelled or returned.",
+            "is_hidden": false,
+            "is_key": false,
+            "format_string": null,
+            "display_folder": null,
+            "source_column": "status",
+            "expression": null,
+            "sort_by": null,
+            "data_category": null
+          },
+          {
+            "table": "Sales",
+            "name": "Is Revenue",
+            "data_type": "boolean",
+            "description": "TRUE for delivered and shipped orders. Revenue measures filter on it.",
+            "is_hidden": false,
+            "is_key": false,
+            "format_string": "\"\"\"TRUE\"\";\"\"TRUE\"\";\"\"FALSE\"\"\"",
+            "display_folder": null,
+            "source_column": "is_revenue",
+            "expression": null,
+            "sort_by": null,
+            "data_category": null
+          },
+          {
+            "table": "Sales",
+            "name": "Quantity",
+            "data_type": "int64",
+            "description": null,
+            "is_hidden": true,
+            "is_key": false,
+            "format_string": "#,0",
+            "display_folder": null,
+            "source_column": "quantity",
+            "expression": null,
+            "sort_by": null,
+            "data_category": null
+          },
+          {
+            "table": "Sales",
+            "name": "Gross Amount",
+            "data_type": "decimal",
+            "description": null,
+            "is_hidden": true,
+            "is_key": false,
+            "format_string": "#,0.00",
+            "display_folder": null,
+            "source_column": "gross_amount",
+            "expression": null,
+            "sort_by": null,
+            "data_category": null
+          },
+          {
+            "table": "Sales",
+            "name": "Discount Amount",
+            "data_type": "decimal",
+            "description": null,
+            "is_hidden": true,
+            "is_key": false,
+            "format_string": "#,0.00",
+            "display_folder": null,
+            "source_column": "discount_amount",
+            "expression": null,
+            "sort_by": null,
+            "data_category": null
+          },
+          {
+            "table": "Sales",
+            "name": "Net Amount",
+            "data_type": "decimal",
+            "description": null,
+            "is_hidden": true,
+            "is_key": false,
+            "format_string": "#,0.00",
+            "display_folder": null,
+            "source_column": "net_amount",
+            "expression": null,
+            "sort_by": null,
+            "data_category": null
+          },
+          {
+            "table": "Sales",
+            "name": "Cost Amount",
+            "data_type": "decimal",
+            "description": null,
+            "is_hidden": true,
+            "is_key": false,
+            "format_string": "#,0.00",
+            "display_folder": null,
+            "source_column": "cost_amount",
+            "expression": null,
+            "sort_by": null,
+            "data_category": null
+          },
+          {
+            "table": "Sales",
+            "name": "Margin Amount",
+            "data_type": "decimal",
+            "description": null,
+            "is_hidden": true,
+            "is_key": false,
+            "format_string": "#,0.00",
+            "display_folder": null,
+            "source_column": "margin_amount",
+            "expression": null,
+            "sort_by": null,
+            "data_category": null
+          }
+        ],
+        "measures": [],
+        "hierarchies": [],
+        "partitions": [
+          {
+            "name": "Sales",
+            "kind": "m",
+            "mode": "import",
+            "source": "let\n    Source = LoadMart(\"fct_sales\"),\n    Selected = Table.SelectColumns(Source, {\n        \"order_item_id\", \"order_id\", \"order_date\", \"customer_id\", \"product_id\",\n        \"channel\", \"payment_method\", \"status\", \"is_revenue\", \"quantity\",\n        \"gross_amount\", \"discount_amount\", \"net_amount\", \"cost_amount\", \"margin_amount\"\n    }),\n    Typed = Table.TransformColumnTypes(Selected, {\n        {\"order_item_id\", Int64.Type}, {\"order_id\", Int64.Type}, {\"order_date\", type date},\n        {\"customer_id\", Int64.Type}, {\"product_id\", Int64.Type},\n        {\"channel\", type text}, {\"payment_method\", type text}, {\"status\", type text},\n        {\"is_revenue\", type logical}, {\"quantity\", Int64.Type},\n        {\"gross_amount\", Currency.Type}, {\"discount_amount\", Currency.Type},\n        {\"net_amount\", Currency.Type}, {\"cost_amount\", Currency.Type},\n        {\"margin_amount\", Currency.Type}\n    }, \"en-US\")\nin\n    Typed"
+          }
+        ],
+        "calculation_items": [],
+        "calculation_group_precedence": null
+      },
+      {
+        "name": "Security",
+        "description": "Mapping user -> regions for dynamic row-level security (role 'Regional Manager').\nDemo data inline; in production this table would come from the identity source.",
+        "is_hidden": true,
+        "data_category": null,
+        "columns": [
+          {
+            "table": "Security",
+            "name": "User Email",
+            "data_type": "string",
+            "description": null,
+            "is_hidden": true,
+            "is_key": false,
+            "format_string": null,
+            "display_folder": null,
+            "source_column": "User Email",
+            "expression": null,
+            "sort_by": null,
+            "data_category": null
+          },
+          {
+            "table": "Security",
+            "name": "Region",
+            "data_type": "string",
+            "description": null,
+            "is_hidden": true,
+            "is_key": false,
+            "format_string": null,
+            "display_folder": null,
+            "source_column": "Region",
+            "expression": null,
+            "sort_by": null,
+            "data_category": null
+          }
+        ],
+        "measures": [],
+        "hierarchies": [],
+        "partitions": [
+          {
+            "name": "Security",
+            "kind": "m",
+            "mode": "import",
+            "source": "let\n    Source = #table(\n        type table [User Email = text, Region = text],\n        {\n            {\"manager.madrid@example.com\", \"Madrid\"},\n            {\"manager.catalonia@example.com\", \"Cataluna\"},\n            {\"manager.south@example.com\", \"Andalucia\"},\n            {\"manager.south@example.com\", \"Comunidad Valenciana\"}\n        }\n    )\nin\n    Source"
+          }
+        ],
+        "calculation_items": [],
+        "calculation_group_precedence": null
+      },
+      {
+        "name": "Time Intelligence",
+        "description": "Calculation group: applies the selected time calculation to ANY measure of the model.",
+        "is_hidden": false,
+        "data_category": null,
+        "columns": [
+          {
+            "table": "Time Intelligence",
+            "name": "Time Calculation",
+            "data_type": "string",
+            "description": null,
+            "is_hidden": false,
+            "is_key": false,
+            "format_string": null,
+            "display_folder": null,
+            "source_column": "Name",
+            "expression": null,
+            "sort_by": "Ordinal",
+            "data_category": null
+          },
+          {
+            "table": "Time Intelligence",
+            "name": "Ordinal",
+            "data_type": "int64",
+            "description": null,
+            "is_hidden": true,
+            "is_key": false,
+            "format_string": "0",
+            "display_folder": null,
+            "source_column": "Ordinal",
+            "expression": null,
+            "sort_by": null,
+            "data_category": null
+          }
+        ],
+        "measures": [],
+        "hierarchies": [],
+        "partitions": [
+          {
+            "name": "Time Intelligence",
+            "kind": "calculationGroup",
+            "mode": null,
+            "source": null
+          }
+        ],
+        "calculation_items": [
+          {
+            "name": "Current",
+            "expression": "SELECTEDMEASURE ()",
+            "format_string_expression": null,
+            "ordinal": null
+          },
+          {
+            "name": "MTD",
+            "expression": "CALCULATE ( SELECTEDMEASURE (), DATESMTD ( 'Date'[Date] ) )",
+            "format_string_expression": null,
+            "ordinal": null
+          },
+          {
+            "name": "YTD",
+            "expression": "CALCULATE ( SELECTEDMEASURE (), DATESYTD ( 'Date'[Date] ) )",
+            "format_string_expression": null,
+            "ordinal": null
+          },
+          {
+            "name": "PY",
+            "expression": "CALCULATE ( SELECTEDMEASURE (), CALCULATETABLE ( SAMEPERIODLASTYEAR ( 'Date'[Date] ), 'Date'[Date With Sales] = TRUE ) )",
+            "format_string_expression": null,
+            "ordinal": null
+          },
+          {
+            "name": "YoY",
+            "expression": "VAR CurrentValue = SELECTEDMEASURE ()\nVAR PreviousValue =\n    CALCULATE ( SELECTEDMEASURE (), CALCULATETABLE ( SAMEPERIODLASTYEAR ( 'Date'[Date] ), 'Date'[Date With Sales] = TRUE ) )\nRETURN\n    IF ( NOT ISBLANK ( CurrentValue ) && NOT ISBLANK ( PreviousValue ), CurrentValue - PreviousValue )",
+            "format_string_expression": null,
+            "ordinal": null
+          },
+          {
+            "name": "YoY %",
+            "expression": "VAR CurrentValue = SELECTEDMEASURE ()\nVAR PreviousValue =\n    CALCULATE ( SELECTEDMEASURE (), CALCULATETABLE ( SAMEPERIODLASTYEAR ( 'Date'[Date] ), 'Date'[Date With Sales] = TRUE ) )\nRETURN\n    IF ( NOT ISBLANK ( CurrentValue ), DIVIDE ( CurrentValue - PreviousValue, PreviousValue ) )",
+            "format_string_expression": "\"0.0%\"",
+            "ordinal": null
+          }
+        ],
+        "calculation_group_precedence": 1
+      }
+    ],
+    "relationships": [
+      {
+        "name": "Sales_Date",
+        "from_table": "Sales",
+        "from_column": "Order Date",
+        "to_table": "Date",
+        "to_column": "Date",
+        "is_active": true,
+        "cross_filter": "oneDirection",
+        "from_cardinality": "many",
+        "to_cardinality": "one"
+      },
+      {
+        "name": "Sales_Customers",
+        "from_table": "Sales",
+        "from_column": "Customer ID",
+        "to_table": "Customers",
+        "to_column": "Customer ID",
+        "is_active": true,
+        "cross_filter": "oneDirection",
+        "from_cardinality": "many",
+        "to_cardinality": "one"
+      },
+      {
+        "name": "Sales_Products",
+        "from_table": "Sales",
+        "from_column": "Product ID",
+        "to_table": "Products",
+        "to_column": "Product ID",
+        "is_active": true,
+        "cross_filter": "oneDirection",
+        "from_cardinality": "many",
+        "to_cardinality": "one"
+      }
+    ],
+    "roles": [
+      {
+        "name": "Regional Manager",
+        "description": "Dynamic RLS: each manager only sees the customers (and therefore the sales) of their regions.",
+        "permission": "read",
+        "table_filters": {
+          "Customers": "Customers[Region]\n    IN CALCULATETABLE (\n        VALUES ( Security[Region] ),\n        Security[User Email] = USERPRINCIPALNAME ()\n    )"
+        }
+      }
+    ],
+    "expressions": [
+      {
+        "name": "SourceMode",
+        "expression": "\"Sample\" meta [IsParameterQuery=true, List={\"Sample\", \"BigQuery\"}, DefaultValue=\"Sample\", Type=\"Text\", IsParameterQueryRequired=true]",
+        "description": "Where the data comes from: \"Sample\" (CSV files in this repository) or \"BigQuery\" (the marts dataset).",
+        "is_parameter": true,
+        "kind": "parameter"
+      },
+      {
+        "name": "SampleDataPath",
+        "expression": "\"https://raw.githubusercontent.com/adonaismarrero/powerbi-sales-semantic-model/main/sample-data/\" meta [IsParameterQuery = true, IsParameterQueryRequired = true, Type = type text]",
+        "description": "Sample mode: base URL (https://...) or local folder (ending in \\) with the CSV files.",
+        "is_parameter": true,
+        "kind": "parameter"
+      },
+      {
+        "name": "BigQueryProject",
+        "expression": "\"my-company-data-prod\" meta [IsParameterQuery=true, Type=\"Text\", IsParameterQueryRequired=true]",
+        "description": "BigQuery mode: GCP project that hosts the marts dataset (also used as billing project).",
+        "is_parameter": true,
+        "kind": "parameter"
+      },
+      {
+        "name": "BigQueryDataset",
+        "expression": "\"marts\" meta [IsParameterQuery=true, Type=\"Text\", IsParameterQueryRequired=true]",
+        "description": "BigQuery mode: dataset built by Dataform with the star schema.",
+        "is_parameter": true,
+        "kind": "parameter"
+      },
+      {
+        "name": "LoadMart",
+        "expression": "(tableName as text) as table =>\nlet\n    FromCsv = (content as binary) as table =>\n        Table.PromoteHeaders(\n            Csv.Document(content, [Delimiter = \",\", Encoding = 65001, QuoteStyle = QuoteStyle.Csv]),\n            [PromoteAllScalars = true]\n        ),\n    Source =\n        if SourceMode = \"BigQuery\" then\n            GoogleBigQuery.Database([BillingProject = BigQueryProject])\n                {[Name = BigQueryProject]}[Data]\n                {[Name = BigQueryDataset, Kind = \"Schema\"]}[Data]\n                {[Name = tableName, Kind = \"Table\"]}[Data]\n        else if Text.StartsWith(SampleDataPath, \"http\") then\n            FromCsv(Web.Contents(SampleDataPath, [RelativePath = tableName & \".csv\"]))\n        else\n            FromCsv(File.Contents(SampleDataPath & tableName & \".csv\"))\nin\n    Source",
+        "description": "Returns a marts table from BigQuery or from the sample CSV files, with the same columns in both modes.",
+        "is_parameter": false,
+        "kind": "function"
+      }
+    ]
+  },
+  "lineage": {
+    "'Customers'[First Order Date]": {
+      "depends_on": [],
+      "used_by": [
+        "[New Customers]"
+      ],
+      "visuals": [],
+      "used": false
+    },
+    "'Customers'[Region]": {
+      "depends_on": [],
+      "used_by": [],
+      "visuals": [
+        "Overview › slicerRegion"
+      ],
+      "used": true
+    },
+    "'Customers'[Segment]": {
+      "depends_on": [],
+      "used_by": [],
+      "visuals": [
+        "Overview › Net revenue by customer segment"
+      ],
+      "used": true
+    },
+    "'Date'[Date]": {
+      "depends_on": [],
+      "used_by": [
+        "'Date'[Date With Sales]",
+        "'Date'[Month Name]",
+        "[New Customers]"
+      ],
+      "visuals": [],
+      "used": true
+    },
+    "'Date'[Date With Sales]": {
+      "depends_on": [
+        "'Date'[Date]",
+        "'Sales'[Order Date]"
+      ],
+      "used_by": [],
+      "visuals": [],
+      "used": true
+    },
+    "'Date'[Month Name]": {
+      "depends_on": [
+        "'Date'[Date]"
+      ],
+      "used_by": [],
+      "visuals": [],
+      "used": true
+    },
+    "'Date'[Quarter]": {
+      "depends_on": [],
+      "used_by": [
+        "'Date'[Quarter Label]"
+      ],
+      "visuals": [],
+      "used": true
+    },
+    "'Date'[Quarter Label]": {
+      "depends_on": [
+        "'Date'[Quarter]"
+      ],
+      "used_by": [],
+      "visuals": [],
+      "used": true
+    },
+    "'Date'[Year]": {
+      "depends_on": [],
+      "used_by": [],
+      "visuals": [
+        "Overview › Net revenue · time intelligence (calculation group)",
+        "Overview › slicerYear"
+      ],
+      "used": true
+    },
+    "'Date'[Year Month]": {
+      "depends_on": [],
+      "used_by": [],
+      "visuals": [
+        "Overview › Net revenue by month"
+      ],
+      "used": true
+    },
+    "'Products'[Category]": {
+      "depends_on": [],
+      "used_by": [],
+      "visuals": [
+        "Overview › Net revenue by category"
+      ],
+      "used": true
+    },
+    "'Sales'[Customer ID]": {
+      "depends_on": [],
+      "used_by": [
+        "[Active Customers]"
+      ],
+      "visuals": [],
+      "used": true
+    },
+    "'Sales'[Discount Amount]": {
+      "depends_on": [],
+      "used_by": [
+        "[Discounts]"
+      ],
+      "visuals": [],
+      "used": false
+    },
+    "'Sales'[Gross Amount]": {
+      "depends_on": [],
+      "used_by": [
+        "[Gross Revenue]"
+      ],
+      "visuals": [],
+      "used": false
+    },
+    "'Sales'[Is Revenue]": {
+      "depends_on": [],
+      "used_by": [
+        "[Active Customers]",
+        "[Discounts]",
+        "[Gross Margin]",
+        "[Gross Revenue]",
+        "[Net Revenue]",
+        "[Orders]",
+        "[Units]"
+      ],
+      "visuals": [],
+      "used": true
+    },
+    "'Sales'[Margin Amount]": {
+      "depends_on": [],
+      "used_by": [
+        "[Gross Margin]"
+      ],
+      "visuals": [],
+      "used": true
+    },
+    "'Sales'[Net Amount]": {
+      "depends_on": [],
+      "used_by": [
+        "[Net Revenue]"
+      ],
+      "visuals": [],
+      "used": true
+    },
+    "'Sales'[Order Date]": {
+      "depends_on": [],
+      "used_by": [
+        "'Date'[Date With Sales]"
+      ],
+      "visuals": [],
+      "used": true
+    },
+    "'Sales'[Order ID]": {
+      "depends_on": [],
+      "used_by": [
+        "[All Orders]",
+        "[Orders]"
+      ],
+      "visuals": [],
+      "used": true
+    },
+    "'Sales'[Quantity]": {
+      "depends_on": [],
+      "used_by": [
+        "[Units]"
+      ],
+      "visuals": [],
+      "used": false
+    },
+    "'Sales'[Status]": {
+      "depends_on": [],
+      "used_by": [
+        "[Cancelled Orders]",
+        "[Returned Orders]"
+      ],
+      "visuals": [],
+      "used": false
+    },
+    "'Time Intelligence'[Time Calculation]": {
+      "depends_on": [],
+      "used_by": [],
+      "visuals": [
+        "Overview › Net revenue · time intelligence (calculation group)"
+      ],
+      "used": true
+    },
+    "[Active Customers]": {
+      "depends_on": [
+        "'Sales'[Customer ID]",
+        "'Sales'[Is Revenue]"
+      ],
+      "used_by": [
+        "[Revenue per Customer]"
+      ],
+      "visuals": [
+        "Overview › kpi5"
+      ],
+      "used": true
+    },
+    "[All Orders]": {
+      "depends_on": [
+        "'Sales'[Order ID]"
+      ],
+      "used_by": [
+        "[Cancellation Rate]",
+        "[Cancelled Orders]",
+        "[Return Rate]",
+        "[Returned Orders]"
+      ],
+      "visuals": [],
+      "used": false
+    },
+    "[Avg Order Value]": {
+      "depends_on": [
+        "[Net Revenue]",
+        "[Orders]"
+      ],
+      "used_by": [],
+      "visuals": [
+        "Overview › kpi4"
+      ],
+      "used": true
+    },
+    "[Cancellation Rate]": {
+      "depends_on": [
+        "[All Orders]",
+        "[Cancelled Orders]"
+      ],
+      "used_by": [],
+      "visuals": [],
+      "used": false
+    },
+    "[Cancelled Orders]": {
+      "depends_on": [
+        "'Sales'[Status]",
+        "[All Orders]"
+      ],
+      "used_by": [
+        "[Cancellation Rate]"
+      ],
+      "visuals": [],
+      "used": false
+    },
+    "[Discount %]": {
+      "depends_on": [
+        "[Discounts]",
+        "[Gross Revenue]"
+      ],
+      "used_by": [],
+      "visuals": [],
+      "used": false
+    },
+    "[Discounts]": {
+      "depends_on": [
+        "'Sales'[Discount Amount]",
+        "'Sales'[Is Revenue]"
+      ],
+      "used_by": [
+        "[Discount %]"
+      ],
+      "visuals": [],
+      "used": false
+    },
+    "[Gross Margin]": {
+      "depends_on": [
+        "'Sales'[Is Revenue]",
+        "'Sales'[Margin Amount]"
+      ],
+      "used_by": [
+        "[Gross Margin %]"
+      ],
+      "visuals": [],
+      "used": true
+    },
+    "[Gross Margin %]": {
+      "depends_on": [
+        "[Gross Margin]",
+        "[Net Revenue]"
+      ],
+      "used_by": [],
+      "visuals": [
+        "Overview › kpi2"
+      ],
+      "used": true
+    },
+    "[Gross Revenue]": {
+      "depends_on": [
+        "'Sales'[Gross Amount]",
+        "'Sales'[Is Revenue]"
+      ],
+      "used_by": [
+        "[Discount %]"
+      ],
+      "visuals": [],
+      "used": false
+    },
+    "[Net Revenue]": {
+      "depends_on": [
+        "'Sales'[Is Revenue]",
+        "'Sales'[Net Amount]"
+      ],
+      "used_by": [
+        "[Avg Order Value]",
+        "[Gross Margin %]",
+        "[Revenue per Customer]"
+      ],
+      "visuals": [
+        "Overview › Net revenue by category",
+        "Overview › Net revenue by customer segment",
+        "Overview › Net revenue by month",
+        "Overview › Net revenue · time intelligence (calculation group)",
+        "Overview › kpi1"
+      ],
+      "used": true
+    },
+    "[New Customers]": {
+      "depends_on": [
+        "'Customers'[First Order Date]",
+        "'Date'[Date]"
+      ],
+      "used_by": [],
+      "visuals": [],
+      "used": false
+    },
+    "[Orders]": {
+      "depends_on": [
+        "'Sales'[Is Revenue]",
+        "'Sales'[Order ID]"
+      ],
+      "used_by": [
+        "[Avg Order Value]"
+      ],
+      "visuals": [
+        "Overview › kpi3"
+      ],
+      "used": true
+    },
+    "[Return Rate]": {
+      "depends_on": [
+        "[All Orders]",
+        "[Returned Orders]"
+      ],
+      "used_by": [],
+      "visuals": [],
+      "used": false
+    },
+    "[Returned Orders]": {
+      "depends_on": [
+        "'Sales'[Status]",
+        "[All Orders]"
+      ],
+      "used_by": [
+        "[Return Rate]"
+      ],
+      "visuals": [],
+      "used": false
+    },
+    "[Revenue per Customer]": {
+      "depends_on": [
+        "[Active Customers]",
+        "[Net Revenue]"
+      ],
+      "used_by": [],
+      "visuals": [],
+      "used": false
+    },
+    "[Units]": {
+      "depends_on": [
+        "'Sales'[Is Revenue]",
+        "'Sales'[Quantity]"
+      ],
+      "used_by": [],
+      "visuals": [],
+      "used": false
+    }
+  },
+  "report": {
+    "name": "SalesAnalytics",
+    "pages": [
+      {
+        "name": "ReportSection",
+        "display_name": "Overview",
+        "visuals": [
+          {
+            "page": "Overview",
+            "name": "kpi1",
+            "visual_type": "card",
+            "title": null,
+            "fields": [
+              {
+                "table": "_Measures",
+                "name": "Net Revenue",
+                "kind": "Measure",
+                "level": null
+              }
+            ]
+          },
+          {
+            "page": "Overview",
+            "name": "kpi2",
+            "visual_type": "card",
+            "title": null,
+            "fields": [
+              {
+                "table": "_Measures",
+                "name": "Gross Margin %",
+                "kind": "Measure",
+                "level": null
+              }
+            ]
+          },
+          {
+            "page": "Overview",
+            "name": "kpi3",
+            "visual_type": "card",
+            "title": null,
+            "fields": [
+              {
+                "table": "_Measures",
+                "name": "Orders",
+                "kind": "Measure",
+                "level": null
+              }
+            ]
+          },
+          {
+            "page": "Overview",
+            "name": "kpi4",
+            "visual_type": "card",
+            "title": null,
+            "fields": [
+              {
+                "table": "_Measures",
+                "name": "Avg Order Value",
+                "kind": "Measure",
+                "level": null
+              }
+            ]
+          },
+          {
+            "page": "Overview",
+            "name": "kpi5",
+            "visual_type": "card",
+            "title": null,
+            "fields": [
+              {
+                "table": "_Measures",
+                "name": "Active Customers",
+                "kind": "Measure",
+                "level": null
+              }
+            ]
+          },
+          {
+            "page": "Overview",
+            "name": "pageTitle",
+            "visual_type": "textbox",
+            "title": null,
+            "fields": []
+          },
+          {
+            "page": "Overview",
+            "name": "revenueByCategory",
+            "visual_type": "clusteredBarChart",
+            "title": "Net revenue by category",
+            "fields": [
+              {
+                "table": "Products",
+                "name": "Category",
+                "kind": "Column",
+                "level": null
+              },
+              {
+                "table": "_Measures",
+                "name": "Net Revenue",
+                "kind": "Measure",
+                "level": null
+              }
+            ]
+          },
+          {
+            "page": "Overview",
+            "name": "revenueByMonth",
+            "visual_type": "lineChart",
+            "title": "Net revenue by month",
+            "fields": [
+              {
+                "table": "Date",
+                "name": "Year Month",
+                "kind": "Column",
+                "level": null
+              },
+              {
+                "table": "_Measures",
+                "name": "Net Revenue",
+                "kind": "Measure",
+                "level": null
+              }
+            ]
+          },
+          {
+            "page": "Overview",
+            "name": "revenueBySegment",
+            "visual_type": "donutChart",
+            "title": "Net revenue by customer segment",
+            "fields": [
+              {
+                "table": "Customers",
+                "name": "Segment",
+                "kind": "Column",
+                "level": null
+              },
+              {
+                "table": "_Measures",
+                "name": "Net Revenue",
+                "kind": "Measure",
+                "level": null
+              }
+            ]
+          },
+          {
+            "page": "Overview",
+            "name": "slicerRegion",
+            "visual_type": "slicer",
+            "title": null,
+            "fields": [
+              {
+                "table": "Customers",
+                "name": "Region",
+                "kind": "Column",
+                "level": null
+              }
+            ]
+          },
+          {
+            "page": "Overview",
+            "name": "slicerYear",
+            "visual_type": "slicer",
+            "title": null,
+            "fields": [
+              {
+                "table": "Date",
+                "name": "Year",
+                "kind": "Column",
+                "level": null
+              }
+            ]
+          },
+          {
+            "page": "Overview",
+            "name": "timeIntelligenceMatrix",
+            "visual_type": "pivotTable",
+            "title": "Net revenue · time intelligence (calculation group)",
+            "fields": [
+              {
+                "table": "Time Intelligence",
+                "name": "Time Calculation",
+                "kind": "Column",
+                "level": null
+              },
+              {
+                "table": "Date",
+                "name": "Year",
+                "kind": "Column",
+                "level": null
+              },
+              {
+                "table": "_Measures",
+                "name": "Net Revenue",
+                "kind": "Measure",
+                "level": null
+              }
+            ]
+          }
+        ],
+        "filters": []
+      }
+    ],
+    "filters": []
+  },
+  "findings": [
+    {
+      "severity": "warning",
+      "code": "PBD002",
+      "object": "[Cancellation Rate]",
+      "message": "Visible measure without a description"
+    },
+    {
+      "severity": "warning",
+      "code": "PBD002",
+      "object": "[Cancelled Orders]",
+      "message": "Visible measure without a description"
+    },
+    {
+      "severity": "warning",
+      "code": "PBD002",
+      "object": "[Discount %]",
+      "message": "Visible measure without a description"
+    },
+    {
+      "severity": "warning",
+      "code": "PBD002",
+      "object": "[Discounts]",
+      "message": "Visible measure without a description"
+    },
+    {
+      "severity": "warning",
+      "code": "PBD002",
+      "object": "[Gross Margin %]",
+      "message": "Visible measure without a description"
+    },
+    {
+      "severity": "warning",
+      "code": "PBD002",
+      "object": "[Orders]",
+      "message": "Visible measure without a description"
+    },
+    {
+      "severity": "warning",
+      "code": "PBD002",
+      "object": "[Return Rate]",
+      "message": "Visible measure without a description"
+    },
+    {
+      "severity": "warning",
+      "code": "PBD002",
+      "object": "[Returned Orders]",
+      "message": "Visible measure without a description"
+    },
+    {
+      "severity": "warning",
+      "code": "PBD002",
+      "object": "[Revenue per Customer]",
+      "message": "Visible measure without a description"
+    },
+    {
+      "severity": "warning",
+      "code": "PBD002",
+      "object": "[Units]",
+      "message": "Visible measure without a description"
+    },
+    {
+      "severity": "info",
+      "code": "PBD008",
+      "object": "[All Orders]",
+      "message": "Measure not used by the report or by other used objects"
+    },
+    {
+      "severity": "info",
+      "code": "PBD008",
+      "object": "[Cancellation Rate]",
+      "message": "Measure not used by the report or by other used objects"
+    },
+    {
+      "severity": "info",
+      "code": "PBD008",
+      "object": "[Cancelled Orders]",
+      "message": "Measure not used by the report or by other used objects"
+    },
+    {
+      "severity": "info",
+      "code": "PBD008",
+      "object": "[Discount %]",
+      "message": "Measure not used by the report or by other used objects"
+    },
+    {
+      "severity": "info",
+      "code": "PBD008",
+      "object": "[Discounts]",
+      "message": "Measure not used by the report or by other used objects"
+    },
+    {
+      "severity": "info",
+      "code": "PBD008",
+      "object": "[Gross Revenue]",
+      "message": "Measure not used by the report or by other used objects"
+    },
+    {
+      "severity": "info",
+      "code": "PBD008",
+      "object": "[New Customers]",
+      "message": "Measure not used by the report or by other used objects"
+    },
+    {
+      "severity": "info",
+      "code": "PBD008",
+      "object": "[Return Rate]",
+      "message": "Measure not used by the report or by other used objects"
+    },
+    {
+      "severity": "info",
+      "code": "PBD008",
+      "object": "[Returned Orders]",
+      "message": "Measure not used by the report or by other used objects"
+    },
+    {
+      "severity": "info",
+      "code": "PBD008",
+      "object": "[Revenue per Customer]",
+      "message": "Measure not used by the report or by other used objects"
+    },
+    {
+      "severity": "info",
+      "code": "PBD008",
+      "object": "[Units]",
+      "message": "Measure not used by the report or by other used objects"
+    },
+    {
+      "severity": "info",
+      "code": "PBD009",
+      "object": "'Customers'[City]",
+      "message": "Visible column not used anywhere (candidate to hide or remove)"
+    },
+    {
+      "severity": "info",
+      "code": "PBD009",
+      "object": "'Customers'[Country]",
+      "message": "Visible column not used anywhere (candidate to hide or remove)"
+    },
+    {
+      "severity": "info",
+      "code": "PBD009",
+      "object": "'Customers'[Customer]",
+      "message": "Visible column not used anywhere (candidate to hide or remove)"
+    },
+    {
+      "severity": "info",
+      "code": "PBD009",
+      "object": "'Customers'[Last Order Date]",
+      "message": "Visible column not used anywhere (candidate to hide or remove)"
+    },
+    {
+      "severity": "info",
+      "code": "PBD009",
+      "object": "'Customers'[Signup Date]",
+      "message": "Visible column not used anywhere (candidate to hide or remove)"
+    },
+    {
+      "severity": "info",
+      "code": "PBD009",
+      "object": "'Date'[Day Name]",
+      "message": "Visible column not used anywhere (candidate to hide or remove)"
+    },
+    {
+      "severity": "info",
+      "code": "PBD009",
+      "object": "'Date'[ISO Week]",
+      "message": "Visible column not used anywhere (candidate to hide or remove)"
+    },
+    {
+      "severity": "info",
+      "code": "PBD009",
+      "object": "'Date'[Is Weekend]",
+      "message": "Visible column not used anywhere (candidate to hide or remove)"
+    },
+    {
+      "severity": "info",
+      "code": "PBD009",
+      "object": "'Products'[Is Active]",
+      "message": "Visible column not used anywhere (candidate to hide or remove)"
+    },
+    {
+      "severity": "info",
+      "code": "PBD009",
+      "object": "'Products'[Price Band]",
+      "message": "Visible column not used anywhere (candidate to hide or remove)"
+    },
+    {
+      "severity": "info",
+      "code": "PBD009",
+      "object": "'Products'[Product]",
+      "message": "Visible column not used anywhere (candidate to hide or remove)"
+    },
+    {
+      "severity": "info",
+      "code": "PBD009",
+      "object": "'Products'[Unit Margin %]",
+      "message": "Visible column not used anywhere (candidate to hide or remove)"
+    },
+    {
+      "severity": "info",
+      "code": "PBD009",
+      "object": "'Products'[Unit Price]",
+      "message": "Visible column not used anywhere (candidate to hide or remove)"
+    },
+    {
+      "severity": "info",
+      "code": "PBD009",
+      "object": "'Sales'[Channel]",
+      "message": "Visible column not used anywhere (candidate to hide or remove)"
+    },
+    {
+      "severity": "info",
+      "code": "PBD009",
+      "object": "'Sales'[Payment Method]",
+      "message": "Visible column not used anywhere (candidate to hide or remove)"
+    }
+  ]
+}

@@ -1,0 +1,13 @@
+relationship a1
+	fromColumn: Fact.'Order Date'
+	toColumn: Date.Date
+
+relationship a2
+	isActive: false
+	fromColumn: Fact.'Ship Date'
+	toColumn: Date.Date
+
+relationship a3
+	crossFilteringBehavior: bothDirections
+	fromColumn: Fact.'Store ID'
+	toColumn: Store.'Store ID'

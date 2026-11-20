@@ -1,0 +1,4 @@
+{"name": "v2", "visual": {"visualType": "card",
+ "query": {"From": [{"Name": "f", "Entity": "Fact"}],
+   "Select": [{"Measure": {"Expression": {"SourceRef": {"Source": "f"}}, "Property": "Shipped Amount"}},
+              {"Column": {"Expression": {"SourceRef": {"Entity": "Fact"}}, "Property": "Gone"}}]}}}

@@ -1,0 +1,7 @@
+model Model
+	culture: en-US
+	discourageImplicitMeasures
+	dataAccessOptions
+		legacyRedirects
+
+ref table Fact

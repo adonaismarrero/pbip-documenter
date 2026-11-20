@@ -1,0 +1,15 @@
+table Calc
+
+	calculationGroup
+		precedence: 2
+
+		calculationItem Current = SELECTEDMEASURE ()
+
+		calculationItem YTD = CALCULATE ( SELECTEDMEASURE (), DATESYTD ( 'Date'[Date] ) )
+			formatStringDefinition = "#,0"
+
+	column Item
+		dataType: string
+		sourceColumn: Name
+
+	partition Calc = calculationGroup

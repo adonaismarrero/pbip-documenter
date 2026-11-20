@@ -1,0 +1,5 @@
+/// Regional readers.
+role Readers
+	modelPermission: read
+
+	tablePermission Store = Store[Region] = "North"

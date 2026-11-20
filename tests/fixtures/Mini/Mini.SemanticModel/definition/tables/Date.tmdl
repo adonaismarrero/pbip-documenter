@@ -1,0 +1,26 @@
+/// Calendar.
+table Date
+	dataCategory: Time
+
+	column Date
+		dataType: dateTime
+		isKey
+		sourceColumn: date
+
+	column Year
+		dataType: int64
+		sourceColumn: year
+
+	column 'Month Name' = FORMAT ( 'Date'[Date], "MMM" )
+		dataType: string
+		sortByColumn: 'Month Number'
+
+	column 'Month Number' = MONTH ( 'Date'[Date] )
+		dataType: int64
+		isHidden
+
+	hierarchy Calendar
+		level Year
+			column: Year
+		level Month
+			column: 'Month Name'
